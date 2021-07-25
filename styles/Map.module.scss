@@ -1,0 +1,35 @@
+
+.minmapContainer :global(.leaflet-marker-icon) {
+  /* NOTE: If adding a new CSS class here, make sure to include it in getMarkerIcon in map.tsx! */
+  &.minbet-unknown {
+    filter: saturate(0); /* gray */
+  }
+
+  &.minbet-low {
+    filter: saturate(0%) brightness(55%) invert(100%) contrast(240%) drop-shadow(0 0 3px black); /* white */
+  }
+
+  &.minbet-5 {
+    filter: hue-rotate(150deg); /* red */
+  }
+
+  &.minbet-10 {
+    filter: brightness(1.4); /* light blue */
+  }
+
+  &.minbet-15 {
+    filter: hue-rotate(60deg); /* purple */
+  }
+
+  &.minbet-20 {
+    filter: hue-rotate(212deg) brightness(1.5); /* yellow */
+  }
+
+  &.minbet-25 {
+    filter: hue-rotate(270deg) brightness(1.2); /* green */
+  }
+
+  &.minbet-high {
+    filter: hue-rotate(194deg) saturate(175%) brightness(123%); /* orange */
+  }
+}
