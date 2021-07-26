@@ -17,8 +17,14 @@ type MapProps = {
 
 const Map: React.FC<MapProps> = (props) => {
   return (
-    <MapContainer className={MapStyles.minmapContainer} center={[36.11095, -115.17285]} zoom={13}>
+    <MapContainer
+      cont
+      className={MapStyles.minmapContainer}
+      center={[36.11095, -115.17285]}
+      zoom={13}
+    >
       <TileLayer
+        detectRetina={true}
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />

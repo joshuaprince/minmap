@@ -30,7 +30,7 @@ export const getCasinoDataFromGoogleSheet = async (): Promise<Casino[]> => {
 
     /* Create a mapping from column number to the header name of that column */
     let headerName: { [key: number]: string } = {};
-    for (let col = 0; (cell = sheet.getCell(HEADER_ROW_ID, col)); col++) {
+    for (let col = NAME_COLUMN_ID + 1; (cell = sheet.getCell(HEADER_ROW_ID, col)); col++) {
       if (!cell.value) break;
       headerName[col] = cell.value.toString();
     }
@@ -41,7 +41,9 @@ export const getCasinoDataFromGoogleSheet = async (): Promise<Casino[]> => {
 
       const coords = coordMap[nameCell.value.toString()];
       let mins: any = {}
-      for (let colNumStr in Object.keys(headerName)) {
+      let updated: string = "Unknown"
+      let extras: Casino['extras'] = {}
+      for (let colNumStr of Object.keys(headerName)) {
         const colNum = parseInt(colNumStr);
         const title = headerName[colNum];
         const cell = sheet.getCell(row, colNum);
@@ -49,14 +51,21 @@ export const getCasinoDataFromGoogleSheet = async (): Promise<Casino[]> => {
         if (Object.values(TimeFrame).includes(title as TimeFrame)) {
           /* Cell is a table minimum */
           mins[title] = await parseMinimum(cell);
+        } else if (title === "Last Update") {
+          updated = cell.formattedValue
+        } else {
+          if (cell.value && cell.value !== "Unknown") {
+            extras[title] = cell.value.toString();
+          }
         }
       }
 
       casinos.push({
         name: nameCell.value.toString(),
         coords: coords,
+        updated: updated,
         minimums: mins,
-        extras: {},
+        extras: extras,
       });
     }
 
