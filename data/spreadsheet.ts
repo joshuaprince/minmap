@@ -1,11 +1,8 @@
-import { GoogleSpreadsheet, GoogleSpreadsheetCell } from "google-spreadsheet";
+import { GoogleSpreadsheet, GoogleSpreadsheetCell, GoogleSpreadsheetWorksheet } from "google-spreadsheet";
 
 import { Casino, Minimum, TimeFrame } from "../interface/casino";
 
 export const getCasinoDataFromGoogleSheet = async (): Promise<Casino[]> => {
-  const HEADER_ROW_ID = 0
-  const NAME_COLUMN_ID = 0  // column "A" always has casino name
-
   const sheetsApiKey = process.env.SHEETS_API_KEY;
   if (!sheetsApiKey) {
     throw new Error("Google Sheets API key is not set.");
@@ -26,50 +23,61 @@ export const getCasinoDataFromGoogleSheet = async (): Promise<Casino[]> => {
   let casinos: Casino[] = [];
   for (const [sheetName, sheet] of Object.entries(doc.sheetsByTitle)) {
     await sheet.loadCells();
-    let cell: GoogleSpreadsheetCell;
+    const sheetMap = sheetToKeyValues(sheetName, sheet);
 
-    /* Create a mapping from column number to the header name of that column */
-    let headerName: { [key: number]: string } = {};
-    for (let col = NAME_COLUMN_ID + 1; (cell = sheet.getCell(HEADER_ROW_ID, col)); col++) {
-      if (!cell.value) break;
-      headerName[col] = cell.value.toString();
+    if (sheetMap.length === 0) continue;
+
+    /* Transform input data to be consistent */
+    if (sheetName === "Non-Nevada") {
+      /* Non-Nevada sheet: Casino names are split across 3 columns */
+      const combineColHeaders = ["OtherNV Casnio", "City", "State"];
+      for (let rowMap of sheetMap) {
+        const name = combineColHeaders.map(h => rowMap.get(h) || "").join(", ");
+        combineColHeaders.forEach(h => rowMap.delete(h));
+        rowMap.set("Name", name);
+      }
+    } else {
+      /* Other sheets: Casino name is the first column (first added in the Map) */
+      for (let rowMap of sheetMap) {
+        const [nameColHeader, name] = rowMap.entries().next().value;
+        rowMap.delete(nameColHeader);
+        rowMap.set("Name", name);
+      }
     }
 
-    for (let row = HEADER_ROW_ID + 1;; row++) {
-      const nameCell = sheet.getCell(row, NAME_COLUMN_ID);
-      if (!nameCell.value) break;
+    for (let row of sheetMap) {
+      const name = row.get("Name");
+      if (!name) throw new Error("Missing casino name from " + row.entries());
+      const coords = coordMap[name];
+      if (!coords) {
+        console.error("Missing coordinates for " + name);
+        continue;
+      }
 
-      const coords = coordMap[nameCell.value.toString()];
       let mins: any = {}
       let updated: string = "Unknown"
       let extras: Casino['extras'] = {}
-      for (let colNumStr of Object.keys(headerName)) {
-        const colNum = parseInt(colNumStr);
-        const title = headerName[colNum];
-        const cell = sheet.getCell(row, colNum);
-
-        if (Object.values(TimeFrame).includes(title as TimeFrame)) {
+      for (let [header, value] of row) {
+        if (Object.values(TimeFrame).includes(header as TimeFrame)) {
           /* Cell is a table minimum */
-          mins[title] = await parseMinimum(cell);
-        } else if (title === "Last Update") {
-          updated = cell.formattedValue
-        } else {
-          if (cell.value && cell.value !== "Unknown") {
-            extras[title] = cell.value.toString();
+          mins[header] = parseMinimum(value);
+        } else if (header === "Last Update") {
+          updated = value
+        } else if (header !== "Name") {
+          if (value && value !== "Unknown") {
+            extras[header] = value;
           }
         }
       }
 
       casinos.push({
-        name: nameCell.value.toString(),
+        name: name,
         coords: coords,
         updated: updated,
         minimums: mins,
         extras: extras,
       });
     }
-
-    break;  // TODO: REMOVE!
   }
 
   return casinos;
@@ -102,8 +110,11 @@ const getCoordinateMap = async (apiKey: string) => {
     const casinoName = sheet.getCell(row, NAME_COL_ID).value?.toString();
     if (!casinoName) break;
 
-    const lat = parseFloat(sheet.getCell(row, LAT_COL_ID).value?.toString());
-    const lon = parseFloat(sheet.getCell(row, LON_COL_ID).value?.toString());
+    const lat = parseFloat(sheet.getCell(row, LAT_COL_ID).formattedValue);
+    const lon = parseFloat(sheet.getCell(row, LON_COL_ID).formattedValue);
+    if (!lat || !lon) {
+      continue;
+    }
 
     ret[casinoName] = [lat, lon];
   }
@@ -111,23 +122,47 @@ const getCoordinateMap = async (apiKey: string) => {
   return ret;
 }
 
-const parseMinimum = async (cell: GoogleSpreadsheetCell): Promise<Minimum> => {
-  const value = cell.value;
-
-  if (typeof value === "number") {
-    return { low: value, high: null };
+const parseMinimum = (value: string): Minimum => {
+  if (value.match(/^\d+$/)) {
+    return { low: parseInt(value), high: null };
   }
 
-  if (typeof value === "string") {
-    if (value.match(/^\d+$/)) {
-      return { low: parseInt(value), high: null };
-    }
-
-    const rangeMatch = value.match(/^(\d+)-(\d+)$/);
-    if (rangeMatch) {
-      return { low: parseInt(rangeMatch[1]), high: parseInt(rangeMatch[2]) };
-    }
+  const rangeMatch = value.match(/^(\d+)-(\d+)$/);
+  if (rangeMatch) {
+    return { low: parseInt(rangeMatch[1]), high: parseInt(rangeMatch[2]) };
   }
 
   return null;
+}
+
+const sheetToKeyValues = (
+  sheetName: string,
+  sheet: GoogleSpreadsheetWorksheet
+): Map<string, string>[] => {
+
+  const HEADER_ROW_ID = 0;
+  const GUARANTEED_COL_ID = 0; /* This column must have data; else the sheet will stop being read */
+
+  let ret: Map<string, string>[] = [];
+
+  /* A sheet-wide mapping from column number to the header name of that column */
+  let headerName = new Map<number, string>();
+  let cell: GoogleSpreadsheetCell;
+  for (let col = 0; (cell = sheet.getCell(HEADER_ROW_ID, col)); col++) {
+    if (!cell.value) break;
+    headerName.set(col, cell.formattedValue);
+  }
+
+  outer:
+  for (let row = HEADER_ROW_ID + 1;; row++) {
+    const mapForRow = new Map<string, string>();
+    for (let [col, header] of headerName) {
+      const cellText = sheet.getCell(row, col).formattedValue;
+      if (col === GUARANTEED_COL_ID && !cellText) break outer;
+      mapForRow.set(header, cellText || "");
+    }
+    ret.push(mapForRow);
+  }
+
+  return ret;
 }

@@ -9,29 +9,30 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import L from "leaflet";
 import "leaflet-defaulticon-compatibility";
 import MapStyles from "../styles/Map.module.scss";
+import { Sidebar } from "./sidebar";
 
 type MapProps = {
   casinos: Casino[]
   selectedTimeframe: TimeFrame
 }
 
-const Map: React.FC<MapProps> = (props) => {
+const LeafletMap: React.FC<MapProps> = (props) => {
   return (
     <MapContainer
-      cont
       className={MapStyles.minmapContainer}
       center={[36.11095, -115.17285]}
       zoom={13}
     >
+      <Sidebar selectedTimeframe={props.selectedTimeframe} selectTimeframe={() => {}}/>
       <TileLayer
         detectRetina={true}
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {props.casinos.map( c => (
+      {props.casinos.map( (c, i) => (
         <Marker
           icon={getMarkerIcon(c, props.selectedTimeframe)}
-          key={c.coords.toString()}
+          key={c.coords.toString() + i}
           position={c.coords}
         >
           <CasinoPopup casino={c} />
@@ -41,6 +42,7 @@ const Map: React.FC<MapProps> = (props) => {
   );
 }
 
+const markerIconCache = new Map<string, L.Icon.Default>();
 const getMarkerIcon = (casino: Casino, timeframe: TimeFrame) => {
   const STYLED_VALUES = [5, 10, 15, 20, 25];
   const mins = casino.minimums[timeframe];
@@ -60,9 +62,16 @@ const getMarkerIcon = (casino: Casino, timeframe: TimeFrame) => {
     }
   }
 
-  return new L.Icon.Default({
-    className: className
-  });
+  const cacheEntry = markerIconCache.get(className);
+  if (cacheEntry) {
+    return cacheEntry;
+  } else {
+    const newIcon = new L.Icon.Default({
+      className: className
+    });
+    markerIconCache.set(className, newIcon);
+    return newIcon;
+  }
 }
 
-export default Map;
+export default LeafletMap;

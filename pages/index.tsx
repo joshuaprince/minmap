@@ -2,15 +2,23 @@ import dynamic from "next/dynamic";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { getCasinoDataFromGoogleSheet } from "../data/spreadsheet";
 import { TimeFrame } from "../interface/casino";
+import React from "react";
+
+type HomeState = {
+  selectedTimeframe: TimeFrame
+}
 
 export default function Home({ casinos }: InferGetStaticPropsType<typeof getStaticProps>) {
   const Map = dynamic(
-    () => import('../components/map'),
+    () => import('../components/leafletMap'),
     { ssr: false }
   );
+
+  const [state, setState] = React.useState<HomeState>({selectedTimeframe: TimeFrame.WEEKNIGHT});
+
   if (casinos !== undefined) {
     return (
-      <Map selectedTimeframe={TimeFrame.WEEKENDNIGHT} casinos={casinos}/>
+      <Map selectedTimeframe={state.selectedTimeframe} casinos={casinos}/>
     )
   } else {
     return (
