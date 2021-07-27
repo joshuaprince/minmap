@@ -48,10 +48,9 @@ export const getCasinoDataFromGoogleSheet = async (): Promise<Casino[]> => {
     for (let row of sheetMap) {
       const name = row.get("Name");
       if (!name) throw new Error("Missing casino name from " + row.entries());
-      const coords = coordMap[name];
+      const coords = coordMap[name] || null;
       if (!coords) {
         console.error("Missing coordinates for " + name);
-        continue;
       }
 
       let mins: any = {}
@@ -105,7 +104,7 @@ const getCoordinateMap = async (apiKey: string) => {
   const sheet = doc.sheetsByIndex[0]
   await sheet.loadCells()
 
-  let ret: { [key: string]: [number, number] } = {};
+  let ret: { [key: string]: [number, number] | null } = {};
   for (let row = HEADER_ROW_ID + 1;; row++) {
     const casinoName = sheet.getCell(row, NAME_COL_ID).value?.toString();
     if (!casinoName) break;
@@ -113,10 +112,10 @@ const getCoordinateMap = async (apiKey: string) => {
     const lat = parseFloat(sheet.getCell(row, LAT_COL_ID).formattedValue);
     const lon = parseFloat(sheet.getCell(row, LON_COL_ID).formattedValue);
     if (!lat || !lon) {
-      continue;
+      ret[casinoName] = null;
+    } else {
+      ret[casinoName] = [lat, lon];
     }
-
-    ret[casinoName] = [lat, lon];
   }
 
   return ret;

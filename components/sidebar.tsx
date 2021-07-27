@@ -29,6 +29,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         <button className={MapStyles.sidebarCloseButton} onClick={() => setState(s => ({...s, shown: false}))}>
         <FontAwesomeIcon icon={faTimes}/>
         </button>
+        <a target="_blank" href="https://icons8.com/icon/35544/chip">Chip</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ export type Minimum = null | {
 
 export type Casino = {
   name: string
-  coords: [number, number]
+  coords: [number, number] | null
   updated: string
 
   minimums: Record<TimeFrame, Minimum>

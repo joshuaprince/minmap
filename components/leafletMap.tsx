@@ -29,15 +29,19 @@ const LeafletMap: React.FC<MapProps> = (props) => {
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {props.casinos.map( (c, i) => (
-        <Marker
-          icon={getMarkerIcon(c, props.selectedTimeframe)}
-          key={c.coords.toString() + i}
-          position={c.coords}
-        >
-          <CasinoPopup casino={c} />
-        </Marker>
-      ))}
+      {props.casinos.map( (c, i) => {
+        if (!c.coords) {
+          console.error("Missing coordinates for " + c.name);
+          return <React.Fragment key={"missingcoord" + c.name + i}/>;
+        } else return (
+          <Marker
+            icon={getMarkerIcon(c, props.selectedTimeframe)}
+            key={c.coords.toString() + i}
+            position={c.coords}
+          >
+            <CasinoPopup casino={c} />
+          </Marker>
+        )})}
     </MapContainer>
   );
 }
