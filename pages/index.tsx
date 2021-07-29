@@ -14,7 +14,7 @@ export default function Home({ casinos }: InferGetStaticPropsType<typeof getStat
     { ssr: false }
   );
 
-  const [state, setState] = React.useState<HomeState>({selectedTimeframe: TimeFrame.WEEKNIGHT});
+  const [state, setState] = React.useState<HomeState>({selectedTimeframe: TimeFrame.WEEKDAY});
 
   if (casinos !== undefined) {
     return (

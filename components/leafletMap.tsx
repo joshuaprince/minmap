@@ -31,11 +31,11 @@ const LeafletMap: React.FC<MapProps> = (props) => {
       />
       {props.casinos.map( (c, i) => {
         if (!c.coords) {
-          console.error("Missing coordinates for " + c.name);
+          console.warn("Missing coordinates for " + c.name);
           return <React.Fragment key={"missingcoord" + c.name + i}/>;
         } else return (
           <Marker
-            icon={getMarkerIcon(c, props.selectedTimeframe)}
+            icon={getStandardMarkerIcon(c, props.selectedTimeframe)}
             key={c.coords.toString() + i}
             position={c.coords}
           >
@@ -47,7 +47,7 @@ const LeafletMap: React.FC<MapProps> = (props) => {
 }
 
 const markerIconCache = new Map<string, L.Icon.Default>();
-const getMarkerIcon = (casino: Casino, timeframe: TimeFrame) => {
+const getStandardMarkerIcon = (casino: Casino, timeframe: TimeFrame) => {
   const STYLED_VALUES = [5, 10, 15, 20, 25];
   const mins = casino.minimums[timeframe];
   let className: string;
@@ -74,6 +74,40 @@ const getMarkerIcon = (casino: Casino, timeframe: TimeFrame) => {
       className: className
     });
     markerIconCache.set(className, newIcon);
+    return newIcon;
+  }
+}
+
+const getChipMarkerIcon = (casino: Casino, timeframe: TimeFrame) => {
+  const STYLED_VALUES = [5, 10, 15, 20, 25];
+  const mins = casino.minimums[timeframe];
+  let chipName: string;
+
+  if (!mins || !mins.low) {
+    chipName = "unknown";
+  } else if (mins.low < STYLED_VALUES[0]) {
+    chipName = "low";
+  } else {
+    chipName = "high";  // fallback
+    for (const styledVal of STYLED_VALUES) {
+      if (mins.low <= styledVal) {
+        chipName = styledVal.toString();
+        break;
+      }
+    }
+  }
+
+  const cacheName = "chip" + chipName;
+  const cacheEntry = markerIconCache.get(cacheName);
+  if (cacheEntry) {
+    return cacheEntry;
+  } else {
+    const newIcon = new L.Icon({
+      iconUrl: "/chip/" + chipName + ".svg",
+      iconAnchor: undefined,  // center?,
+      iconSize: [48, 48]
+    });
+    markerIconCache.set(cacheName, newIcon);
     return newIcon;
   }
 }
