@@ -1,5 +1,6 @@
 import Head from "next/head";
 import type { AppProps } from 'next/app'
+import { ChakraProvider } from "@chakra-ui/react"
 
 import '../styles/globals.css'
 
@@ -16,7 +17,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="msapplication-TileColor" content="#da532c"/>
         <meta name="theme-color" content="#ffffff"/>
       </Head>
-      <Component {...pageProps} />
+      <ChakraProvider>
+        <Component {...pageProps} />
+      </ChakraProvider>
     </>
   );
 }

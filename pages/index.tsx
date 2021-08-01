@@ -1,34 +1,51 @@
 import dynamic from "next/dynamic";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
-import { getCasinoDataFromGoogleSheet } from "../data/spreadsheet";
 import { TimeFrame } from "../interface/casino";
 import React from "react";
+import { Sidebar } from "../components/sidebar";
+import { getCasinoDataFromJson } from "../data/json";
 
 type HomeState = {
   selectedTimeframe: TimeFrame
 }
 
-export default function Home({ casinos }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const Map = dynamic(
-    () => import('../components/leafletMap'),
-    { ssr: false }
-  );
+const DynamicMap = dynamic(
+  () => import('../components/leafletMap'),
+  { ssr: false }
+);
 
+export default function Home({ casinos }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [state, setState] = React.useState<HomeState>({selectedTimeframe: TimeFrame.WEEKDAY});
 
+  let mapDiv;
   if (casinos !== undefined) {
-    return (
-      <Map selectedTimeframe={state.selectedTimeframe} casinos={casinos}/>
+    mapDiv = (
+      <DynamicMap key={1} selectedTimeframe={state.selectedTimeframe} casinos={casinos}/>
     )
   } else {
-    return (
+    mapDiv = (
       <div>Loading...</div>
     )
   }
+
+  return (
+    <>
+      {mapDiv}
+      <Sidebar
+        selectedTimeframe={state.selectedTimeframe}
+        selectTimeframe={(t: TimeFrame) => setState(s => ({...s, selectedTimeframe: t}))}
+        links={{
+          spreadsheetComments: "",
+          spreadsheetDirect: "",  // TODO
+        }}
+      />
+    </>
+  );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const casinos = await getCasinoDataFromGoogleSheet();
+  // const casinos = await getCasinoDataFromGoogleSheet();
+  const casinos = await getCasinoDataFromJson();
   return {
     props: {
       casinos: casinos

@@ -1,5 +1,5 @@
 import React from "react";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { AttributionControl, MapContainer, Marker, TileLayer } from "react-leaflet";
 
 import { Casino, TimeFrame } from "../interface/casino";
 import { CasinoPopup } from "./casinopopup";
@@ -9,7 +9,6 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import L from "leaflet";
 import "leaflet-defaulticon-compatibility";
 import MapStyles from "../styles/Map.module.scss";
-import { Sidebar } from "./sidebar";
 
 type MapProps = {
   casinos: Casino[]
@@ -19,11 +18,12 @@ type MapProps = {
 const LeafletMap: React.FC<MapProps> = (props) => {
   return (
     <MapContainer
+      attributionControl={false}  // Included below in bottom left!
       className={MapStyles.minmapContainer}
       center={[36.11095, -115.17285]}
       zoom={13}
     >
-      <Sidebar selectedTimeframe={props.selectedTimeframe} selectTimeframe={() => {}}/>
+      <AttributionControl position={"bottomleft"}/>
       <TileLayer
         detectRetina={true}
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'

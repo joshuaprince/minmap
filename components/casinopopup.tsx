@@ -37,7 +37,7 @@ export const CasinoPopup: React.FC<CasinoPopupProps> = (props) => {
 }
 
 const minimumToString = (minimum: Minimum): string => {
-  if (minimum === null) {
+  if (!minimum) {
     return "Unknown";
   }
 
