@@ -33,3 +33,30 @@
     filter: hue-rotate(194deg) saturate(175%) brightness(123%); /* orange */
   }
 }
+
+/** POPUP STYLES **/
+
+.popup {
+  h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  .popupMinimums {
+    font-size: 1.2em;
+  }
+
+  .lastUpdated {
+    margin-top: 4px;
+    font-size: 1.2em;
+  }
+
+  .selectedTimeframe {
+    font-weight: bold;
+  }
+
+  .extras {
+    font-size: 1.1em;
+  }
+}

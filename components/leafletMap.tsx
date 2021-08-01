@@ -39,7 +39,7 @@ const LeafletMap: React.FC<MapProps> = (props) => {
             key={c.coords.toString() + i}
             position={c.coords}
           >
-            <CasinoPopup casino={c} />
+            <CasinoPopup casino={c} selectedTimeframe={props.selectedTimeframe} />
           </Marker>
         )})}
     </MapContainer>

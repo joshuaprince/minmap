@@ -1,9 +1,10 @@
 import React from "react";
 import classNames from "classnames";
-import { Heading, Link, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Heading, Text } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons"
 
+import { TimeframeRadioButtons } from "./timeframeRadioButtons";
 import { TimeFrame } from "../interface/casino";
 import { SidebarLinks } from "../interface/links";
 
@@ -35,20 +36,46 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
     <div className={SidebarStyles.sidebarContent}>
       <Heading>&#127922;&#127922;<br/> Craps Table Minimum Map </Heading>
       <Text>
-        This map plots the typical table minimums at each casino in the United States, as reported
-        on Reddit's <Link href={"https://www.reddit.com/r/Craps/"}>/r/Craps</Link>
+        This map plots the typical table minimums at casinos in the United States. Data
+        shown is collected daily from{" "}
+        <a target="_blank" href={"https://www.reddit.com/r/Craps/"}>/r/Craps</a>{"' "}
+        <a target="_blank" href={props.links.spreadsheetComments}>Spreadsheet of Minimums</a>,
+        which is maintained by{" "}
+        <a target="_blank" href={"https://twitter.com/cochran10"}>@cochran10</a>.
+      </Text>
+      <Text>
+        <b>All data is user-reported and not guaranteed to be accurate.</b> If any data is incorrect
+        or missing,{" "}
+        <a target="_blank" href={props.links.spreadsheetComments}><b>please report it here!</b></a>
       </Text>
 
-      <RadioGroup value={props.selectedTimeframe} onChange={props.selectTimeframe}>
-        <Stack>
-          {Object.values(TimeFrame).map(t => (
-            <Radio key={t} value={t}>{t}</Radio>
-          ))}
-        </Stack>
-      </RadioGroup>
+      <h2 style={{marginTop: 30, marginBottom: 8, fontSize: "larger"}}>Map Settings</h2>
+      <div className={SidebarStyles.timeframeSelect}>
+        <h3>Color markers by minimums as of:</h3>
+        <TimeframeRadioButtons
+          value={props.selectedTimeframe}
+          update={(t) => {
+            if (shouldHideByDefault()) setState(s => ({...s, shown: false}));
+            props.selectTimeframe(t);
+          }}
+        />
+      </div>
 
-      <a target="_blank" href="https://icons8.com/icon/35544/chip">Chip</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
-      <a href="https://www.vecteezy.com/free-vector/poker-chip">Poker Chip Vectors by Vecteezy</a>
+      <Text>
+
+      </Text>
+
+      <div className={SidebarStyles.attributions}>
+        <div>
+          Built by <a target="_blank" href="https://github.com/joshuaprince">Joshua Prince</a>.
+        </div>
+        <div>
+          <a target="_blank" href="https://icons8.com/icon/35544/chip">Chip</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>.
+        </div>
+        <div>
+          <a target="_blank" href="https://www.vecteezy.com/free-vector/poker-chip">Poker Chip Vectors by Vecteezy</a>.
+        </div>
+      </div>
     </div>
   );
 

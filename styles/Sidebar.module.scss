@@ -1,30 +1,39 @@
+$sidebarTransition: right 0.3s ease-in-out;
+
 .sidebar {
   position: fixed;
-  height: 100%;
+  //height: 100%;
   --sidebarWidth: calc(min(max(400px, 25vw), (100vw + 1px)));
   width: var(--sidebarWidth);
   right: calc(-1 * var(--sidebarWidth));
-  transition: right 0.3s ease-in-out ;
+  transition: $sidebarTransition;
   &.shown {
     right: 0;
   }
   top: 0;
+  bottom: 0;
+  overflow: auto;
   z-index: 1000;
   background: #eeeeee;
   border-left: 1px solid black;
   box-shadow: -1px 0 5px black;
   padding: 30px;
+  a {
+    text-decoration: underline;
+    color: teal;
+  }
 }
 
 .sidebarButton:global(.leaflet-control) {
   // TODO: There's probably a better way to match the Leaflet controls
   font-size: x-large;
-  position: absolute;
+  position: fixed;
   top: 10px;
-  left: -48px;
-  transition: opacity 0.3s ease-in-out, display 0.3s;
+  right: 16px;
+  transition: opacity 0.3s ease-in-out, $sidebarTransition;
   .shown & {
     opacity: 0.5;
+    right: calc(var(--sidebarWidth) + 16px);
     //display: none;
   }
   width: 32px;
@@ -44,8 +53,8 @@
 }
 
 .sidebarCloseButton {
-  position: absolute;
-  right: 10px;
+  position: fixed;
+  right: 16px;
   top: 10px;
   width: 20px;
   height: 20px;
@@ -53,10 +62,27 @@
 
 .sidebarContent {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
 }
 
 .sidebarContent p {
   margin-top: 20px;
+}
+
+.timeframeSelect {
+  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  //margin-top: 30px;
+  margin-bottom: 30px;
+  h3 {
+    margin-bottom: 8px;
+  }
+}
+
+.timeframeButton {
+  width: 100%;
+  text-align: center;
 }

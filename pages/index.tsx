@@ -35,8 +35,8 @@ export default function Home({ casinos }: InferGetStaticPropsType<typeof getStat
         selectedTimeframe={state.selectedTimeframe}
         selectTimeframe={(t: TimeFrame) => setState(s => ({...s, selectedTimeframe: t}))}
         links={{
-          spreadsheetComments: "",
-          spreadsheetDirect: "",  // TODO
+          spreadsheetComments: process.env.LINK_SPREADSHEET_COMMENTS!,
+          spreadsheetDirect: process.env.LINK_SPREADSHEET_DIRECT!,
         }}
       />
     </>
