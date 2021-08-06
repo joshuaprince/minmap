@@ -12,6 +12,7 @@ type HomeState = {
   map?: LeafletMap
   selectedTimeframe: TimeFrame
   sidebarOpen?: boolean
+  openPopup?: (casino: Casino) => void
 }
 
 const DynamicMap = dynamic(
@@ -35,6 +36,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
         selectedTimeframe={state.selectedTimeframe}
         casinos={casinos}
         sidebarShown={!!state.sidebarOpen}
+        setOpenPopupCb={(o) => setState(s => ({...s, openPopup: o}))}
       />
     )
   } else {
@@ -56,8 +58,8 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
         selectTimeframe={(t: TimeFrame) => setState(s => ({...s, selectedTimeframe: t}))}
         casinos={casinos}
         scrollTo={(c) => {
-          state.map?.flyTo(c.coords!, 16, {duration: 0.5, easeLinearity: 1});
-          // TODO: Open a popup
+          state.map?.flyTo(c.coords!, 15, {duration: 0.5, easeLinearity: 1});
+          if (state.openPopup) state.openPopup(c);
         }}
         links={{
           spreadsheetComments: process.env.LINK_SPREADSHEET_COMMENTS!,

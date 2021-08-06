@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 import { CircleMarker, MapContainer, TileLayer } from "react-leaflet";
 
 import { Casino, TimeFrame } from "../interface/casino";
@@ -9,17 +10,25 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import L from "leaflet";
 import "leaflet-defaulticon-compatibility";
 import MapStyles from "../styles/Map.module.scss";
-import classNames from "classnames";
 
 type MapProps = {
   setMap: (map: L.Map) => void
   casinos: Casino[]
   selectedTimeframe: TimeFrame
   sidebarShown: boolean
+  setOpenPopupCb: (fn: (casino: Casino) => void) => void  /* good luck */
 }
 
 export class LeafletMap extends React.Component<MapProps> {
   markerMap = new Map<Casino, L.CircleMarker | null>();
+
+  openPopup(casino: Casino) {
+    this.markerMap.get(casino)?.openPopup();
+  }
+
+  componentDidMount() {
+    this.props.setOpenPopupCb(this.openPopup.bind(this))
+  }
 
   componentDidUpdate() {
     for (const casino of this.markerMap.keys()) {

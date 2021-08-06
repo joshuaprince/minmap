@@ -107,6 +107,9 @@ $sidebarPadding: 30px;
   overflow: auto;
   position: absolute;
   width: calc(100% - 2 * #{$sidebarPadding});
+  li {
+    cursor: pointer;
+  }
 }
 
 .timeframeSelect {
