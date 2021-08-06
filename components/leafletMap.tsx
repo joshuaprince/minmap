@@ -9,42 +9,46 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import L from "leaflet";
 import "leaflet-defaulticon-compatibility";
 import MapStyles from "../styles/Map.module.scss";
+import classNames from "classnames";
 
 type MapProps = {
   setMap: (map: L.Map) => void
   casinos: Casino[]
   selectedTimeframe: TimeFrame
+  sidebarShown: boolean
 }
 
 const LeafletMap: React.FC<MapProps> = (props) => {
   return (
-    <MapContainer
-      whenCreated={props.setMap}
-      attributionControl={false}  // Included below in bottom left!
-      className={MapStyles.minmapContainer}
-      center={[36.11095, -115.17285]}
-      zoom={13}
-    >
-      <AttributionControl position={"bottomleft"}/>
-      <TileLayer
-        detectRetina={true}
-        attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      {props.casinos.map( (c, i) => {
-        if (!c.coords) {
-          console.warn("Missing coordinates for " + c.name);
-          return <React.Fragment key={"missingcoord" + c.name + i}/>;
-        } else return (
-          <Marker
-            icon={getStandardMarkerIcon(c, props.selectedTimeframe)}
-            key={c.coords.toString() + i}
-            position={c.coords}
-          >
-            <CasinoPopup casino={c} selectedTimeframe={props.selectedTimeframe} />
-          </Marker>
-        )})}
-    </MapContainer>
+    <div className={classNames(MapStyles.mapDiv, { [MapStyles.sidebarShown]: props.sidebarShown })}>
+      <MapContainer
+        whenCreated={props.setMap}
+        attributionControl={false}  // Included below in bottom left!
+        className={MapStyles.minmapContainer}
+        center={[36.11095, -115.17285]}
+        zoom={13}
+      >
+        <AttributionControl position={"bottomleft"}/>
+        <TileLayer
+          detectRetina={true}
+          attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {props.casinos.map( (c, i) => {
+          if (!c.coords) {
+            console.warn("Missing coordinates for " + c.name);
+            return <React.Fragment key={"missingcoord" + c.name + i}/>;
+          } else return (
+            <Marker
+              icon={getStandardMarkerIcon(c, props.selectedTimeframe)}
+              key={c.coords.toString() + i}
+              position={c.coords}
+            >
+              <CasinoPopup casino={c} selectedTimeframe={props.selectedTimeframe} />
+            </Marker>
+          )})}
+      </MapContainer>
+    </div>
   );
 }
 

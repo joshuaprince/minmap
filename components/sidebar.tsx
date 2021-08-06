@@ -12,6 +12,8 @@ import { SidebarLinks } from "../interface/links";
 import SidebarStyles from "../styles/Sidebar.module.scss";
 
 type SidebarProps = {
+  shown?: boolean  /* If undefined, determine visibility by media query */
+  setShown: (s: boolean) => void
   selectedTimeframe: TimeFrame
   selectTimeframe: (t: TimeFrame) => void
   casinos: Casino[]
@@ -20,20 +22,12 @@ type SidebarProps = {
   lastUpdateJson: string
 }
 
-type SidebarState = {
-  shown: boolean
-}
-
 export const Sidebar: React.FC<SidebarProps> = (props) => {
-  const [state, setState] = React.useState<SidebarState>({ shown: true });
-
   /* On smaller screens, hide the sidebar at page load. We have to useEffect here instead of passing
    * the matchMedia to useState above because `window` is not available for SSR. Also,
    * useMediaQuery does not appear to work for initialState, likely also due to SSR issues. */
   React.useEffect(() => {
-    if (shouldHideByDefault()) {
-      setState(s => ({...s, shown: false}));
-    }
+    props.setShown(!shouldHideByDefault());
   }, []);  /* No deps => only runs at first render */
 
   const sidebarContent = (
@@ -56,7 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       <div className={SidebarStyles.searchContainer}>
         <h2>Search</h2>
         <Search casinos={props.casinos} onSelect={(c) => {
-          if (shouldHideByDefault()) setState(s => ({...s, shown: false}));
+          if (shouldHideByDefault()) props.setShown(false);
           props.scrollTo(c);
         }}/>
       </div>
@@ -67,7 +61,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         <TimeframeRadioButtons
           value={props.selectedTimeframe}
           update={(t) => {
-            if (shouldHideByDefault()) setState(s => ({...s, shown: false}));
+            if (shouldHideByDefault()) props.setShown(false);
             props.selectTimeframe(t);
           }}
         />
@@ -108,13 +102,13 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
     <div
       className={classNames(
         SidebarStyles.sidebar,
-        { [SidebarStyles.shown]: state.shown }
+        { [SidebarStyles.shown]: props.shown }
       )}
     >
       {/* SHOW button */}
       <button
         className={classNames("leaflet-control", SidebarStyles.sidebarButton)}
-        onClick={() => setState(s => ({...s, shown: !s.shown}))}
+        onClick={() => props.setShown(!props.shown)}
       >
         <FontAwesomeIcon icon={faBars}/>
       </button>
@@ -122,7 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       {/* CLOSE button */}
       <button
         className={SidebarStyles.sidebarCloseButton}
-        onClick={() => setState(s => ({...s, shown: false}))}
+        onClick={() => props.setShown(false)}
       >
         <FontAwesomeIcon icon={faTimes}/>
       </button>

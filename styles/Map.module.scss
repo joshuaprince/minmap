@@ -1,4 +1,15 @@
 
+.mapDiv {
+  height: 100%;
+  width: 100%;
+  @media ("min-width: 960px") {
+    transition: width 0.3s ease-in-out;;
+    &.sidebarShown {
+      width: calc(100% - 400px);
+    }
+  }
+}
+
 .minmapContainer :global(.leaflet-marker-icon) {
   /* NOTE: If adding a new CSS class here, make sure to include it in getMarkerIcon in map.tsx! */
   &.minbet-unknown {

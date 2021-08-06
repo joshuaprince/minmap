@@ -11,6 +11,7 @@ import { getCasinoDataFromGoogleSheet } from "../data/spreadsheet";
 type HomeState = {
   map?: LeafletMap
   selectedTimeframe: TimeFrame
+  sidebarOpen?: boolean
 }
 
 const DynamicMap = dynamic(
@@ -22,6 +23,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
   const [state, setState] = React.useState<HomeState>({
     map: undefined,
     selectedTimeframe: TimeFrame.WEEKDAY,
+    sidebarOpen: undefined,
   });
 
   let mapDiv;
@@ -32,6 +34,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
         setMap={(m) => setState(s => ({...s, map: m}))}
         selectedTimeframe={state.selectedTimeframe}
         casinos={casinos}
+        sidebarShown={!!state.sidebarOpen}
       />
     )
   } else {
@@ -44,6 +47,11 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
     <>
       {mapDiv}
       <Sidebar
+        shown={state.sidebarOpen}
+        setShown={(s) => {
+          setState((st) => ({...st, sidebarOpen: s}));
+          setTimeout(() => state.map?.invalidateSize(), 350);
+        }}
         selectedTimeframe={state.selectedTimeframe}
         selectTimeframe={(t: TimeFrame) => setState(s => ({...s, selectedTimeframe: t}))}
         casinos={casinos}
