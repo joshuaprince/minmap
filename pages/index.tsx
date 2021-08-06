@@ -56,7 +56,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
         selectTimeframe={(t: TimeFrame) => setState(s => ({...s, selectedTimeframe: t}))}
         casinos={casinos}
         scrollTo={(c) => {
-          state.map?.setView(c.coords!, 16);
+          state.map?.flyTo(c.coords!, 16, {duration: 0.5, easeLinearity: 1});
           // TODO: Open a popup
         }}
         links={{
@@ -86,6 +86,7 @@ export const getStaticProps: GetStaticProps = async () => {
     casinos = await getCasinoDataFromJson();
   } else {
     casinos = await getCasinoDataFromGoogleSheet(sheetIdMins, sheetIdCoords, sheetsApiKey);
+    // console.log(JSON.stringify(casinos));
   }
 
   const revalidateTime = parseInt(process.env.REVALIDATE_TIME || "") || undefined

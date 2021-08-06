@@ -15,6 +15,7 @@ export const getCasinoDataFromGoogleSheet = async (
   const coordMap = await getCoordinateMap(sheetIdCoords, apiKey);
 
   let casinos: Casino[] = [];
+  let uid = 0;
   for (const [sheetName, sheet] of Object.entries(doc.sheetsByTitle)) {
     await sheet.loadCells();
     const sheetMap = sheetToKeyValues(sheetName, sheet);
@@ -64,6 +65,7 @@ export const getCasinoDataFromGoogleSheet = async (
       }
 
       casinos.push({
+        uniqueId: uid++,
         name: name,
         coords: coords,
         updated: updated,

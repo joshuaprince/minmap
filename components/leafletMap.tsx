@@ -1,5 +1,5 @@
 import React from "react";
-import { AttributionControl, MapContainer, Marker, TileLayer } from "react-leaflet";
+import { CircleMarker, MapContainer, TileLayer } from "react-leaflet";
 
 import { Casino, TimeFrame } from "../interface/casino";
 import { CasinoPopup } from "./casinopopup";
@@ -18,38 +18,81 @@ type MapProps = {
   sidebarShown: boolean
 }
 
-const LeafletMap: React.FC<MapProps> = (props) => {
-  return (
-    <div className={classNames(MapStyles.mapDiv, { [MapStyles.sidebarShown]: props.sidebarShown })}>
-      <MapContainer
-        whenCreated={props.setMap}
-        attributionControl={false}  // Included below in bottom left!
-        className={MapStyles.minmapContainer}
-        center={[36.11095, -115.17285]}
-        zoom={13}
-      >
-        <AttributionControl position={"bottomleft"}/>
-        <TileLayer
-          detectRetina={true}
-          attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {props.casinos.map( (c, i) => {
-          if (!c.coords) {
-            console.warn("Missing coordinates for " + c.name);
-            return <React.Fragment key={"missingcoord" + c.name + i}/>;
-          } else return (
-            <Marker
-              icon={getStandardMarkerIcon(c, props.selectedTimeframe)}
-              key={c.coords.toString() + i}
-              position={c.coords}
-            >
-              <CasinoPopup casino={c} selectedTimeframe={props.selectedTimeframe} />
-            </Marker>
-          )})}
-      </MapContainer>
-    </div>
-  );
+export class LeafletMap extends React.Component<MapProps> {
+  markerMap = new Map<Casino, L.CircleMarker | null>();
+
+  componentDidUpdate() {
+    for (const casino of this.markerMap.keys()) {
+      const mkr = this.markerMap.get(casino);
+      mkr?.setStyle({color: getCircleMarkerColor(casino, this.props.selectedTimeframe)})
+    }
+  }
+
+  render() {
+    return (
+      <div className={classNames(MapStyles.mapDiv, {[MapStyles.sidebarShown]: this.props.sidebarShown})}>
+        <MapContainer
+          preferCanvas={true}
+          whenCreated={this.props.setMap}
+          className={MapStyles.minmapContainer}
+          center={[36.11095, -115.17285]}
+          zoom={13}
+        >
+          <TileLayer
+            detectRetina={true}
+            attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {this.props.casinos.map((c, i) => {
+            if (!c.coords) {
+              console.warn("Missing coordinates for " + c.name);
+              return <React.Fragment key={"missingcoord" + c.name + i} />;
+            }
+
+            return (
+              <CircleMarker
+                ref={r => (this.markerMap.set(c, r))}
+                weight={6}
+                fillOpacity={0.5}
+                color={getCircleMarkerColor(c, this.props.selectedTimeframe)}
+                // icon={getStandardMarkerIcon(c, props.selectedTimeframe)}
+                key={c.coords.toString() + i}
+                center={c.coords}
+                radius={10}
+              >
+                <CasinoPopup casino={c} selectedTimeframe={this.props.selectedTimeframe} />
+              </CircleMarker>
+            )
+          })}
+        </MapContainer>
+      </div>
+    );
+  }
+}
+
+const getCircleMarkerColor = (casino: Casino, timeframe: TimeFrame) => {
+  const mins = casino.minimums[timeframe];
+  let color: string;
+
+  if (!mins) {
+    color = "#888888";
+  } else if (mins.low < 5) {
+    color = "#ffffff";
+  } else if (mins.low < 10) {
+    color = "#ff0000";
+  } else if (mins.low < 15) {
+    color = "#3333ff";
+  } else if (mins.low < 20) {
+    color = "#aa00ff";
+  } else if (mins.low < 25) {
+    color = "#ffff00";
+  } else if (mins.low < 50) {
+    color = "#00ff00";
+  } else {
+    color = "#ff6600";
+  }
+
+  return color;
 }
 
 const markerIconCache = new Map<string, L.Icon.Default>();

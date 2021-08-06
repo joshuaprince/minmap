@@ -26,7 +26,8 @@ export const Search: React.FC<SearchProps> = (props) => {
         return items.filter(i => i.label.toLowerCase().includes(inputValue.toLowerCase())).slice(0, 6);
       })}
       onSelectedItemsChange={(s) => {
-        props.onSelect(props.casinos.find(c => c.name === s.selectedItems![0].label)!);
+        const clicked = props.casinos.find(c => c.name === s.selectedItems?.[0]?.label)
+        if (clicked) props.onSelect(clicked);
       }}
     />
   );
