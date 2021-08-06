@@ -46,7 +46,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       <Text>
         <b>All data is user-reported and not guaranteed to be accurate.</b> If any data is incorrect
         or missing,{" "}
-        <a target="_blank" href={props.links.spreadsheetComments}><b>please report it here!</b></a>
+        <a target="_blank" rel="noopener noreferrer" href={props.links.spreadsheetComments}><b>please report it here!</b></a>
       </Text>
 
       <h2 style={{marginTop: 30, marginBottom: 8, fontSize: "larger"}}>Map Settings</h2>
@@ -70,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
           Built by <a target="_blank" rel="noopener noreferrer" href="https://github.com/joshuaprince">Joshua Prince</a>.
         </div>
         <div>
-          <a target="_blank" rel="noopener noreferrer" href="https://icons8.com/icon/35544/chip">Chip</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>.
+          <a target="_blank" rel="noopener noreferrer" href="https://icons8.com/icon/35544/chip">Chip</a> icon by <a target="_blank" rel="noopener noreferrer" href="https://icons8.com">Icons8</a>.
         </div>
         <div>
           <a target="_blank" rel="noopener noreferrer" href="https://www.vecteezy.com/free-vector/poker-chip">Poker Chip Vectors by Vecteezy</a>.
