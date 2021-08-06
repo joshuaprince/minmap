@@ -46,10 +46,11 @@ export default function Home({ casinos }: InferGetStaticPropsType<typeof getStat
 export const getStaticProps: GetStaticProps = async () => {
   // const casinos = await getCasinoDataFromGoogleSheet();
   const casinos = await getCasinoDataFromJson();
+  const revalidateTime = parseInt(process.env.REVALIDATE_TIME || "") || undefined
   return {
     props: {
       casinos: casinos
     },
-    // revalidate: 5000  // TODO
+    revalidate: revalidateTime
   }
 }

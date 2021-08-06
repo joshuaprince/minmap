@@ -38,10 +38,10 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       <Text>
         This map plots the typical table minimums at casinos in the United States. Data
         shown is collected daily from{" "}
-        <a target="_blank" href={"https://www.reddit.com/r/Craps/"}>/r/Craps</a>{"' "}
-        <a target="_blank" href={props.links.spreadsheetComments}>Spreadsheet of Minimums</a>,
+        <a target="_blank" rel="noopener noreferrer" href={"https://www.reddit.com/r/Craps/"}>/r/Craps</a>{"' "}
+        <a target="_blank" rel="noopener noreferrer" href={props.links.spreadsheetComments}>Spreadsheet of Minimums</a>,
         which is maintained by{" "}
-        <a target="_blank" href={"https://twitter.com/cochran10"}>@cochran10</a>.
+        <a target="_blank" rel="noopener noreferrer" href={"https://twitter.com/cochran10"}>@cochran10</a>.
       </Text>
       <Text>
         <b>All data is user-reported and not guaranteed to be accurate.</b> If any data is incorrect
@@ -67,13 +67,13 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
       <div className={SidebarStyles.attributions}>
         <div>
-          Built by <a target="_blank" href="https://github.com/joshuaprince">Joshua Prince</a>.
+          Built by <a target="_blank" rel="noopener noreferrer" href="https://github.com/joshuaprince">Joshua Prince</a>.
         </div>
         <div>
-          <a target="_blank" href="https://icons8.com/icon/35544/chip">Chip</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>.
+          <a target="_blank" rel="noopener noreferrer" href="https://icons8.com/icon/35544/chip">Chip</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>.
         </div>
         <div>
-          <a target="_blank" href="https://www.vecteezy.com/free-vector/poker-chip">Poker Chip Vectors by Vecteezy</a>.
+          <a target="_blank" rel="noopener noreferrer" href="https://www.vecteezy.com/free-vector/poker-chip">Poker Chip Vectors by Vecteezy</a>.
         </div>
       </div>
     </div>
