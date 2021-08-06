@@ -2,23 +2,17 @@ import { GoogleSpreadsheet, GoogleSpreadsheetCell, GoogleSpreadsheetWorksheet } 
 
 import { Casino, Minimum, TimeFrame } from "../interface/casino";
 
-export const getCasinoDataFromGoogleSheet = async (): Promise<Casino[]> => {
-  const sheetsApiKey = process.env.SHEETS_API_KEY;
-  if (!sheetsApiKey) {
-    throw new Error("Google Sheets API key is not set.");
-  }
-
-  const sheetId = process.env.SHEET_ID_MINS;
-  if (!sheetId) {
-    throw new Error("Minimums Sheet ID is not set.");
-  }
-
-  const doc = new GoogleSpreadsheet(sheetId);
-  doc.useApiKey(sheetsApiKey);
+export const getCasinoDataFromGoogleSheet = async (
+  sheetIdMins: string,
+  sheetIdCoords: string,
+  apiKey: string,
+): Promise<Casino[]> => {
+  const doc = new GoogleSpreadsheet(sheetIdMins);
+  doc.useApiKey(apiKey);
   await doc.loadInfo();
   console.log("Minimums sheet title: " + doc.title);
 
-  const coordMap = await getCoordinateMap(sheetsApiKey);
+  const coordMap = await getCoordinateMap(sheetIdCoords, apiKey);
 
   let casinos: Casino[] = [];
   for (const [sheetName, sheet] of Object.entries(doc.sheetsByTitle)) {
@@ -86,18 +80,13 @@ export const getCasinoDataFromGoogleSheet = async (): Promise<Casino[]> => {
  * Get a mapping from Casino name to its coordinates in the world, by referring to
  * https://docs.google.com/spreadsheets/d/1RWX7TwDwgV2glC2MxuPCVaTbNIoUDiMrKQh_vBBT3j0/edit#gid=0
  */
-const getCoordinateMap = async (apiKey: string) => {
+const getCoordinateMap = async (sheetId: string, apiKey: string) => {
   const HEADER_ROW_ID = 0;
   const NAME_COL_ID = 0;
   const LAT_COL_ID = 1;
   const LON_COL_ID = 2;
 
-  const coordsSheetId = process.env.SHEET_ID_COORDINATES;
-  if (!coordsSheetId) {
-    throw new Error("Coordinates Sheet ID is not set.");
-  }
-
-  const doc = new GoogleSpreadsheet(coordsSheetId);
+  const doc = new GoogleSpreadsheet(sheetId);
   doc.useApiKey(apiKey)
   await doc.loadInfo();
   console.log("Coordinates sheet title: " + doc.title);
