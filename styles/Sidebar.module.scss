@@ -66,6 +66,20 @@ $sidebarTransition: right 0.3s ease-in-out;
   flex-wrap: wrap;
 }
 
+.sidebarContent h1 {
+  text-align: center;
+  line-height: 1.2em;
+  font-size: 2.2em;
+  font-weight: bold;
+}
+
+.sidebarContent h2 {
+  margin-top: 30px;
+  margin-bottom: 8px;
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
 .sidebarContent p {
   margin-top: 20px;
 }
@@ -85,4 +99,18 @@ $sidebarTransition: right 0.3s ease-in-out;
 .timeframeButton {
   width: 100%;
   text-align: center;
+}
+
+.linkIcons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  svg {
+    color: black;
+    width: 48px;
+  }
+}
+
+.attributions {
+  font-size: small;
 }

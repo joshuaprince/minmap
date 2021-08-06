@@ -1,7 +1,8 @@
 import React from "react";
 import classNames from "classnames";
-import { Heading, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons"
 
 import { TimeframeRadioButtons } from "./timeframeRadioButtons";
@@ -34,7 +35,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
   const sidebarContent = (
     <div className={SidebarStyles.sidebarContent}>
-      <Heading>&#127922;&#127922;<br/> Craps Table Minimum Map </Heading>
+      <h1>&#127922;&#127922;<br/> Craps Table Minimum Map </h1>
       <Text>
         This map plots the typical table minimums at casinos in the United States. Data
         shown is collected daily from{" "}
@@ -49,7 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         <a target="_blank" rel="noopener noreferrer" href={props.links.spreadsheetComments}><b>please report it here!</b></a>
       </Text>
 
-      <h2 style={{marginTop: 30, marginBottom: 8, fontSize: "larger"}}>Map Settings</h2>
+      <h2>Map Settings</h2>
       <div className={SidebarStyles.timeframeSelect}>
         <h3>Color markers by minimums as of:</h3>
         <TimeframeRadioButtons
@@ -65,14 +66,28 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
       </Text>
 
+      <div className={SidebarStyles.linkIcons}>
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/joshuaprince/minmap" title={"GitHub"}>
+          <FontAwesomeIcon icon={faGithub}/>
+        </a>
+      </div>
       <div className={SidebarStyles.attributions}>
         <div>
           Built by <a target="_blank" rel="noopener noreferrer" href="https://github.com/joshuaprince">Joshua Prince</a>.
         </div>
         <div>
-          <a target="_blank" rel="noopener noreferrer" href="https://icons8.com/icon/35544/chip">Chip</a> icon by <a target="_blank" rel="noopener noreferrer" href="https://icons8.com">Icons8</a>.
+          Data maintained by <a target="_blank" rel="noopener noreferrer" href={"https://twitter.com/cochran10"}>@cochran10</a>.
         </div>
+        <p>
+          Libraries used include:{" "}
+          <a target="_blank" rel="noopener noreferrer" href={"https://reactjs.org/"}>React</a>,{" "}
+          <a target="_blank" rel="noopener noreferrer" href={"https://nextjs.org/"}>Next</a>,{" "}
+          <a target="_blank" rel="noopener noreferrer" href={"https://leafletjs.com/"}>Leaflet</a>,{" "}
+          <a target="_blank" rel="noopener noreferrer" href={"https://osm.org/"}>OpenStreetMap</a>,{" "}
+          <a target="_blank" rel="noopener noreferrer" href={"https://fontawesome.com/"}>Font Awesome</a>.{" "}
+        </p>
         <div>
+          <a target="_blank" rel="noopener noreferrer" href="https://icons8.com/icon/35544/chip">Chip</a> favicon by <a target="_blank" rel="noopener noreferrer" href="https://icons8.com">Icons8</a>.{" "}
           <a target="_blank" rel="noopener noreferrer" href="https://www.vecteezy.com/free-vector/poker-chip">Poker Chip Vectors by Vecteezy</a>.
         </div>
       </div>
