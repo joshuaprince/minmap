@@ -15,7 +15,7 @@ const DynamicMap = dynamic(
   { ssr: false }
 );
 
-export default function Home({ casinos }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({ casinos, updated }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [state, setState] = React.useState<HomeState>({selectedTimeframe: TimeFrame.WEEKDAY});
 
   let mapDiv;
@@ -39,6 +39,7 @@ export default function Home({ casinos }: InferGetStaticPropsType<typeof getStat
           spreadsheetComments: process.env.LINK_SPREADSHEET_COMMENTS!,
           spreadsheetDirect: process.env.LINK_SPREADSHEET_DIRECT!,
         }}
+        lastUpdateJson={updated}
       />
     </>
   );
@@ -66,9 +67,13 @@ export const getStaticProps: GetStaticProps = async () => {
   const revalidateTime = parseInt(process.env.REVALIDATE_TIME || "") || undefined
   console.log("Revalidation time: " + revalidateTime);
 
+  const updatedTime = new Date().toJSON();
+  console.log("Updated: " + updatedTime)
+
   return {
     props: {
-      casinos: casinos
+      casinos: casinos,
+      updated: updatedTime,
     },
     revalidate: revalidateTime
   }

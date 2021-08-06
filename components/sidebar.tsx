@@ -15,6 +15,7 @@ type SidebarProps = {
   selectedTimeframe: TimeFrame
   selectTimeframe: (t: TimeFrame) => void
   links: SidebarLinks
+  lastUpdateJson: string
 }
 
 type SidebarState = {
@@ -72,6 +73,9 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         </a>
       </div>
       <div className={SidebarStyles.attributions}>
+        <div>
+          Last update from spreadsheet: {new Date(props.lastUpdateJson).toLocaleString()}
+        </div>
         <div>
           Built by <a target="_blank" rel="noopener noreferrer" href="https://github.com/joshuaprince">Joshua Prince</a>.
         </div>
