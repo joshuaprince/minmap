@@ -11,6 +11,7 @@ import "leaflet-defaulticon-compatibility";
 import MapStyles from "../styles/Map.module.scss";
 
 type MapProps = {
+  setMap: (map: L.Map) => void
   casinos: Casino[]
   selectedTimeframe: TimeFrame
 }
@@ -18,6 +19,7 @@ type MapProps = {
 const LeafletMap: React.FC<MapProps> = (props) => {
   return (
     <MapContainer
+      whenCreated={props.setMap}
       attributionControl={false}  // Included below in bottom left!
       className={MapStyles.minmapContainer}
       center={[36.11095, -115.17285]}

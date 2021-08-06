@@ -1,27 +1,38 @@
+import React from "react";
 import dynamic from "next/dynamic";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { Map as LeafletMap } from "leaflet";
+
 import { Casino, TimeFrame } from "../interface/casino";
-import React from "react";
 import { Sidebar } from "../components/sidebar";
 import { getCasinoDataFromJson } from "../data/json";
 import { getCasinoDataFromGoogleSheet } from "../data/spreadsheet";
 
 type HomeState = {
+  map?: LeafletMap
   selectedTimeframe: TimeFrame
 }
 
 const DynamicMap = dynamic(
-  () => import('../components/leafletMap'),
+  () => import("../components/leafletMap"),
   { ssr: false }
 );
 
 export default function Home({ casinos, updated }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const [state, setState] = React.useState<HomeState>({selectedTimeframe: TimeFrame.WEEKDAY});
+  const [state, setState] = React.useState<HomeState>({
+    map: undefined,
+    selectedTimeframe: TimeFrame.WEEKDAY,
+  });
 
   let mapDiv;
   if (casinos !== undefined) {
     mapDiv = (
-      <DynamicMap key={1} selectedTimeframe={state.selectedTimeframe} casinos={casinos}/>
+      <DynamicMap
+        key={1}
+        setMap={(m) => setState(s => ({...s, map: m}))}
+        selectedTimeframe={state.selectedTimeframe}
+        casinos={casinos}
+      />
     )
   } else {
     mapDiv = (
@@ -35,6 +46,11 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
       <Sidebar
         selectedTimeframe={state.selectedTimeframe}
         selectTimeframe={(t: TimeFrame) => setState(s => ({...s, selectedTimeframe: t}))}
+        casinos={casinos}
+        scrollTo={(c) => {
+          state.map?.setView(c.coords!, 16);
+          // TODO: Open a popup
+        }}
         links={{
           spreadsheetComments: process.env.LINK_SPREADSHEET_COMMENTS!,
           spreadsheetDirect: process.env.LINK_SPREADSHEET_DIRECT!,

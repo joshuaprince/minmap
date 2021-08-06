@@ -1,12 +1,12 @@
 import React from "react";
 import classNames from "classnames";
-import { Text } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons"
 
 import { TimeframeRadioButtons } from "./timeframeRadioButtons";
-import { TimeFrame } from "../interface/casino";
+import { Search } from "./search";
+import { Casino, TimeFrame } from "../interface/casino";
 import { SidebarLinks } from "../interface/links";
 
 import SidebarStyles from "../styles/Sidebar.module.scss";
@@ -14,6 +14,8 @@ import SidebarStyles from "../styles/Sidebar.module.scss";
 type SidebarProps = {
   selectedTimeframe: TimeFrame
   selectTimeframe: (t: TimeFrame) => void
+  casinos: Casino[]
+  scrollTo: (casino: Casino) => void
   links: SidebarLinks
   lastUpdateJson: string
 }
@@ -37,19 +39,27 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   const sidebarContent = (
     <div className={SidebarStyles.sidebarContent}>
       <h1>&#127922;&#127922;<br/> Craps Table Minimum Map </h1>
-      <Text>
+      <p>
         This map plots the typical table minimums at casinos in the United States. Data
         shown is collected daily from{" "}
-        <a target="_blank" rel="noopener noreferrer" href={"https://www.reddit.com/r/Craps/"}>/r/Craps</a>{"' "}
+        <a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/Craps/">/r/Craps</a>{"' "}
         <a target="_blank" rel="noopener noreferrer" href={props.links.spreadsheetComments}>Spreadsheet of Minimums</a>,
         which is maintained by{" "}
-        <a target="_blank" rel="noopener noreferrer" href={"https://twitter.com/cochran10"}>@cochran10</a>.
-      </Text>
-      <Text>
+        <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/cochran10">@cochran10</a>.
+      </p>
+      <p>
         <b>All data is user-reported and not guaranteed to be accurate.</b> If any data is incorrect
         or missing,{" "}
         <a target="_blank" rel="noopener noreferrer" href={props.links.spreadsheetComments}><b>please report it here!</b></a>
-      </Text>
+      </p>
+
+      <div className={SidebarStyles.searchContainer}>
+        <h2>Search</h2>
+        <Search casinos={props.casinos} onSelect={(c) => {
+          if (shouldHideByDefault()) setState(s => ({...s, shown: false}));
+          props.scrollTo(c);
+        }}/>
+      </div>
 
       <h2>Map Settings</h2>
       <div className={SidebarStyles.timeframeSelect}>
@@ -62,10 +72,6 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
           }}
         />
       </div>
-
-      <Text>
-
-      </Text>
 
       <div className={SidebarStyles.linkIcons}>
         <a target="_blank" rel="noopener noreferrer" href="https://github.com/joshuaprince/minmap" title={"GitHub"}>
@@ -80,15 +86,15 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
           Built by <a target="_blank" rel="noopener noreferrer" href="https://github.com/joshuaprince">Joshua Prince</a>.
         </div>
         <div>
-          Data maintained by <a target="_blank" rel="noopener noreferrer" href={"https://twitter.com/cochran10"}>@cochran10</a>.
+          Data maintained by <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/cochran10">@cochran10</a>.
         </div>
         <p>
           Libraries used include:{" "}
-          <a target="_blank" rel="noopener noreferrer" href={"https://reactjs.org/"}>React</a>,{" "}
-          <a target="_blank" rel="noopener noreferrer" href={"https://nextjs.org/"}>Next</a>,{" "}
-          <a target="_blank" rel="noopener noreferrer" href={"https://leafletjs.com/"}>Leaflet</a>,{" "}
-          <a target="_blank" rel="noopener noreferrer" href={"https://osm.org/"}>OpenStreetMap</a>,{" "}
-          <a target="_blank" rel="noopener noreferrer" href={"https://fontawesome.com/"}>Font Awesome</a>.{" "}
+          <a target="_blank" rel="noopener noreferrer" href="https://reactjs.org/">React</a>,{" "}
+          <a target="_blank" rel="noopener noreferrer" href="https://nextjs.org/">Next</a>,{" "}
+          <a target="_blank" rel="noopener noreferrer" href="https://leafletjs.com/">Leaflet</a>,{" "}
+          <a target="_blank" rel="noopener noreferrer" href="https://osm.org/">OpenStreetMap</a>,{" "}
+          <a target="_blank" rel="noopener noreferrer" href="https://fontawesome.com/">Font Awesome</a>.{" "}
         </p>
         <div>
           <a target="_blank" rel="noopener noreferrer" href="https://icons8.com/icon/35544/chip">Chip</a> favicon by <a target="_blank" rel="noopener noreferrer" href="https://icons8.com">Icons8</a>.{" "}
@@ -104,7 +110,6 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         SidebarStyles.sidebar,
         { [SidebarStyles.shown]: state.shown }
       )}
-      onMouseDown={(e) => {e.preventDefault(); return false;}}
     >
       {/* SHOW button */}
       <button
