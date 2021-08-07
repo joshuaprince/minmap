@@ -46,6 +46,7 @@ export const getCasinoDataFromGoogleSheet = async (
       const coords = coordMap[name] || null;
       if (!coords) {
         console.error("Missing coordinates for " + name);
+        continue;
       }
 
       let mins: any = {}
