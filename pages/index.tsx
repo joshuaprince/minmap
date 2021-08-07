@@ -13,7 +13,7 @@ type HomeState = {
   map?: LeafletMap
   selectedTimeframe: TimeFrame
   selectedColorScheme: ColorScheme
-  sidebarOpen?: boolean
+  sidebarOpen: boolean
   openPopup?: (casino: Casino) => void
 }
 
@@ -27,7 +27,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
     map: undefined,
     selectedTimeframe: TimeFrame.WEEKDAY,
     selectedColorScheme: ColorScheme.CHIP_COLOR,
-    sidebarOpen: undefined,
+    sidebarOpen: true,
   });
 
   let mapDiv;
@@ -39,7 +39,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
         selectedTimeframe={state.selectedTimeframe}
         selectedColorScheme={state.selectedColorScheme}
         casinos={casinos}
-        sidebarShown={!!state.sidebarOpen}
+        sidebarShown={state.sidebarOpen}
         setOpenPopupCb={(o) => setState(s => ({...s, openPopup: o}))}
       />
     )
