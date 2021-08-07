@@ -5,6 +5,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons"
 
 import { TimeframeRadioButtons } from "./timeframeRadioButtons";
+import { ColorScheme, ColorSchemeRadioButtons } from "./colorSchemeRadioButtons";
 import { Search } from "./search";
 import { Casino, TimeFrame } from "../interface/casino";
 import { SidebarLinks } from "../interface/links";
@@ -16,6 +17,8 @@ type SidebarProps = {
   setShown: (s: boolean) => void
   selectedTimeframe: TimeFrame
   selectTimeframe: (t: TimeFrame) => void
+  selectedColorScheme: ColorScheme
+  selectColorScheme: (t: ColorScheme) => void
   casinos: Casino[]
   scrollTo: (casino: Casino) => void
   links: SidebarLinks
@@ -35,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       <h1>&#127922;&#127922;<br/> Craps Table Minimum Map </h1>
       <p>
         This map plots the typical table minimums at casinos in the United States. Data
-        shown is collected daily from{" "}
+        shown is collected directly from{" "}
         <a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/Craps/">/r/Craps</a>{"' "}
         <a target="_blank" rel="noopener noreferrer" href={props.links.spreadsheetComments}>Spreadsheet of Minimums</a>,
         which is maintained by{" "}
@@ -63,6 +66,14 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
           update={(t) => {
             if (shouldHideByDefault()) props.setShown(false);
             props.selectTimeframe(t);
+          }}
+        />
+        <h3>Marker color scheme:</h3>
+        <ColorSchemeRadioButtons
+          value={props.selectedColorScheme}
+          update={(t) => {
+            if (shouldHideByDefault()) props.setShown(false);
+            props.selectColorScheme(t);
           }}
         />
       </div>

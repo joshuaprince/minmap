@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { CircleMarker, MapContainer, TileLayer } from "react-leaflet";
 
 import { Casino, TimeFrame } from "../interface/casino";
+import { ColorScheme } from "./colorSchemeRadioButtons";
 import { CasinoPopup } from "./casinopopup";
 
 import "leaflet/dist/leaflet.css";
@@ -10,11 +11,13 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import L from "leaflet";
 import "leaflet-defaulticon-compatibility";
 import MapStyles from "../styles/Map.module.scss";
+import { getCircleMarkerColor } from "./colors";
 
 type MapProps = {
   setMap: (map: L.Map) => void
   casinos: Casino[]
   selectedTimeframe: TimeFrame
+  selectedColorScheme: ColorScheme
   sidebarShown: boolean
   setOpenPopupCb: (fn: (casino: Casino) => void) => void  /* good luck */
 }
@@ -33,7 +36,9 @@ export class LeafletMap extends React.Component<MapProps> {
   componentDidUpdate() {
     for (const casino of this.markerMap.keys()) {
       const mkr = this.markerMap.get(casino);
-      mkr?.setStyle({color: getCircleMarkerColor(casino, this.props.selectedTimeframe)})
+      mkr?.setStyle({
+        color: getCircleMarkerColor(casino, this.props.selectedTimeframe, this.props.selectedColorScheme)
+      })
     }
   }
 
@@ -61,9 +66,9 @@ export class LeafletMap extends React.Component<MapProps> {
             return (
               <CircleMarker
                 ref={r => (this.markerMap.set(c, r))}
-                weight={6}
+                weight={4}
                 fillOpacity={0.5}
-                color={getCircleMarkerColor(c, this.props.selectedTimeframe)}
+                color={getCircleMarkerColor(c, this.props.selectedTimeframe, this.props.selectedColorScheme)}
                 // icon={getStandardMarkerIcon(c, props.selectedTimeframe)}
                 key={c.coords.toString() + i}
                 center={c.coords}
@@ -76,97 +81,6 @@ export class LeafletMap extends React.Component<MapProps> {
         </MapContainer>
       </div>
     );
-  }
-}
-
-const getCircleMarkerColor = (casino: Casino, timeframe: TimeFrame) => {
-  const mins = casino.minimums[timeframe];
-  let color: string;
-
-  if (!mins) {
-    color = "#888888";
-  } else if (mins.low < 5) {
-    color = "#ffffff";
-  } else if (mins.low < 10) {
-    color = "#ff0000";
-  } else if (mins.low < 15) {
-    color = "#3333ff";
-  } else if (mins.low < 20) {
-    color = "#aa00ff";
-  } else if (mins.low < 25) {
-    color = "#ffff00";
-  } else if (mins.low < 50) {
-    color = "#00ff00";
-  } else {
-    color = "#ff6600";
-  }
-
-  return color;
-}
-
-const markerIconCache = new Map<string, L.Icon.Default>();
-const getStandardMarkerIcon = (casino: Casino, timeframe: TimeFrame) => {
-  const STYLED_VALUES = [5, 10, 15, 20, 25];
-  const mins = casino.minimums[timeframe];
-  let className: string;
-
-  if (!mins) {
-    className = MapStyles["minbet-unknown"];
-  } else if (mins.low < STYLED_VALUES[0]) {
-    className = MapStyles["minbet-low"];
-  } else {
-    className = MapStyles["minbet-high"];  // fallback
-    for (const styledVal of STYLED_VALUES) {
-      if (mins.low <= styledVal) {
-        className = MapStyles["minbet-" + mins.low];
-        break;
-      }
-    }
-  }
-
-  const cacheEntry = markerIconCache.get(className);
-  if (cacheEntry) {
-    return cacheEntry;
-  } else {
-    const newIcon = new L.Icon.Default({
-      className: className
-    });
-    markerIconCache.set(className, newIcon);
-    return newIcon;
-  }
-}
-
-const getChipMarkerIcon = (casino: Casino, timeframe: TimeFrame) => {
-  const STYLED_VALUES = [5, 10, 15, 20, 25];
-  const mins = casino.minimums[timeframe];
-  let chipName: string;
-
-  if (!mins || !mins.low) {
-    chipName = "unknown";
-  } else if (mins.low < STYLED_VALUES[0]) {
-    chipName = "low";
-  } else {
-    chipName = "high";  // fallback
-    for (const styledVal of STYLED_VALUES) {
-      if (mins.low <= styledVal) {
-        chipName = styledVal.toString();
-        break;
-      }
-    }
-  }
-
-  const cacheName = "chip" + chipName;
-  const cacheEntry = markerIconCache.get(cacheName);
-  if (cacheEntry) {
-    return cacheEntry;
-  } else {
-    const newIcon = new L.Icon({
-      iconUrl: "/chip/" + chipName + ".svg",
-      iconAnchor: undefined,  // center?,
-      iconSize: [48, 48]
-    });
-    markerIconCache.set(cacheName, newIcon);
-    return newIcon;
   }
 }
 

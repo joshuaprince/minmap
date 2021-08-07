@@ -20,6 +20,7 @@
     "@types/google-spreadsheet": "^3.1.4",
     "chakra-ui-autocomplete": "^1.4.2",
     "classnames": "^2.3.1",
+    "color-interpolate": "^1.0.5",
     "framer-motion": "^4",
     "google-spreadsheet": "^3.1.15",
     "leaflet": "^1.7.1",

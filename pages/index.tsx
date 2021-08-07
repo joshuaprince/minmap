@@ -4,6 +4,7 @@ import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { Map as LeafletMap } from "leaflet";
 
 import { Casino, TimeFrame } from "../interface/casino";
+import { ColorScheme } from "../components/colorSchemeRadioButtons";
 import { Sidebar } from "../components/sidebar";
 import { getCasinoDataFromJson } from "../data/json";
 import { getCasinoDataFromGoogleSheet } from "../data/spreadsheet";
@@ -11,6 +12,7 @@ import { getCasinoDataFromGoogleSheet } from "../data/spreadsheet";
 type HomeState = {
   map?: LeafletMap
   selectedTimeframe: TimeFrame
+  selectedColorScheme: ColorScheme
   sidebarOpen?: boolean
   openPopup?: (casino: Casino) => void
 }
@@ -24,6 +26,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
   const [state, setState] = React.useState<HomeState>({
     map: undefined,
     selectedTimeframe: TimeFrame.WEEKDAY,
+    selectedColorScheme: ColorScheme.CHIP_COLOR,
     sidebarOpen: undefined,
   });
 
@@ -34,6 +37,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
         key={1}
         setMap={(m) => setState(s => ({...s, map: m}))}
         selectedTimeframe={state.selectedTimeframe}
+        selectedColorScheme={state.selectedColorScheme}
         casinos={casinos}
         sidebarShown={!!state.sidebarOpen}
         setOpenPopupCb={(o) => setState(s => ({...s, openPopup: o}))}
@@ -56,6 +60,8 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
         }}
         selectedTimeframe={state.selectedTimeframe}
         selectTimeframe={(t: TimeFrame) => setState(s => ({...s, selectedTimeframe: t}))}
+        selectedColorScheme={state.selectedColorScheme}
+        selectColorScheme={(c: ColorScheme) => setState(s => ({...s, selectedColorScheme: c}))}
         casinos={casinos}
         scrollTo={(c) => {
           state.map?.flyTo(c.coords!, 15, {duration: 0.5, easeLinearity: 1});
