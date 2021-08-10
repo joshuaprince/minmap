@@ -1,3 +1,4 @@
+@use "variables";
 
 .mapDiv {
   height: 100%;
@@ -5,7 +6,7 @@
   @media ("min-width: 960px") {
     transition: width 0.3s ease-in-out;;
     &.sidebarShown {
-      width: calc(100% - 400px);
+      width: calc(100% - #{variables.$sidebarWidth});
     }
   }
 }

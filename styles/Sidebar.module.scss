@@ -1,12 +1,12 @@
+@use "variables";
 $sidebarTransition: right 0.3s ease-in-out;
 $sidebarPadding: 30px;
 
 .sidebar {
   position: fixed;
   //height: 100%;
-  --sidebarWidth: calc(min(max(400px, 25vw), (100vw + 1px)));
-  width: var(--sidebarWidth);
-  right: calc(-1 * var(--sidebarWidth));
+  width: variables.$sidebarWidth;
+  right: calc(-1 * #{variables.$sidebarWidth});
   transition: $sidebarTransition;
   &.shown {
     right: 0;
@@ -34,7 +34,7 @@ $sidebarPadding: 30px;
   transition: opacity 0.3s ease-in-out, $sidebarTransition;
   .shown & {
     opacity: 0.5;
-    right: calc(var(--sidebarWidth) + 16px);
+    right: calc(#{variables.$sidebarWidth} + 16px);
     //display: none;
   }
   width: 32px;
@@ -55,7 +55,7 @@ $sidebarPadding: 30px;
 
 .sidebarCloseButton {
   position: fixed;
-  right: 16px;
+  right: 24px;
   top: 10px;
   width: 20px;
   height: 20px;
