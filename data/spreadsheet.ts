@@ -45,7 +45,7 @@ export const getCasinoDataFromGoogleSheet = async (
       if (!name) throw new Error("Missing casino name from " + row.entries());
       const coords = coordMap[name] || null;
       if (!coords) {
-        console.error("Missing coordinates for " + name);
+        console.warn("Missing coordinates for " + name);
         continue;
       }
 
@@ -142,6 +142,15 @@ const sheetToKeyValues = (
   for (let col = 0; (cell = sheet.getCell(HEADER_ROW_ID, col)); col++) {
     if (!cell.value) break;
     headerName.set(col, cell.formattedValue);
+  }
+
+  /* Validate "Min" headers are present */
+  outer:
+  for (const header of Object.values(TimeFrame)) {
+    for (const mapEntry of headerName.values()) {
+      if (header === mapEntry) continue outer;
+    }
+    console.error("Missing " + header + " header from sheet " + sheetName + ".");
   }
 
   outer:
