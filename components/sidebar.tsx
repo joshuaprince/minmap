@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons"
+import { useMediaQuery } from "react-responsive";
 
 import { TimeframeRadioButtons } from "./timeframeRadioButtons";
 import { ColorScheme, ColorSchemeRadioButtons } from "./colorSchemeRadioButtons";
@@ -33,6 +34,8 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
     props.setShown(!shouldHideByDefault());
   }, []);  /* No deps => only runs at first render */
 
+  const isTap = useMediaQuery({ query: "(hover: none)" });
+
   const sidebarContent = (
     <div className={SidebarStyles.sidebarContent}>
       <h1>&#127922;&#127922;<br/> Craps Table Minimum Map </h1>
@@ -43,6 +46,9 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         <a target="_blank" rel="noopener noreferrer" href={props.links.spreadsheetComments}>Spreadsheet of Minimums</a>,
         which is maintained by{" "}
         <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/cochran10">@cochran10</a>.
+      </p>
+      <p>
+        {isTap ? "Tap" : "Click on"} a location on the map to see more information about it.
       </p>
       <p>
         <b>All data is user-reported and not guaranteed to be accurate.</b> If any data is incorrect
