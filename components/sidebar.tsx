@@ -116,20 +116,24 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   );
 
   return (
+    <>
+    {/* SHOW button */}
+    <div
+      className={classNames(
+        "leaflet-control",
+        SidebarStyles.sidebarButton,
+        { [SidebarStyles.shown]: props.shown }
+      )}
+      onClick={() => props.setShown(!props.shown)}
+    >
+      <FontAwesomeIcon icon={faBars}/>
+    </div>
     <div
       className={classNames(
         SidebarStyles.sidebar,
         { [SidebarStyles.shown]: props.shown }
       )}
     >
-      {/* SHOW button */}
-      <button
-        className={classNames("leaflet-control", SidebarStyles.sidebarButton)}
-        onClick={() => props.setShown(!props.shown)}
-      >
-        <FontAwesomeIcon icon={faBars}/>
-      </button>
-
       {/* CLOSE button */}
       <button
         className={SidebarStyles.sidebarCloseButton}
@@ -140,6 +144,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
       {sidebarContent}
     </div>
+    </>
   );
 }
 
