@@ -135,6 +135,19 @@ $sidebarPadding: 30px;
   text-align: center;
 }
 
+.colorKey {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+  & > div {
+    padding: 5px;
+    width: 40px;
+    text-align: center;
+  }
+}
+
 .linkIcons {
   display: flex;
   justify-content: center;

@@ -1,36 +1,44 @@
 import { Casino, TimeFrame } from "../interface/casino";
 import { ColorScheme } from "./colorSchemeRadioButtons";
 import interpolate from "color-interpolate";
-import L from "leaflet";
+import type L from "leaflet";
 import MapStyles from "../styles/Map.module.scss";
 
-export const getCircleMarkerColor = (casino: Casino, timeframe: TimeFrame, scheme: ColorScheme) => {
+export const casinoToMin = (casino: Casino, timeframe: TimeFrame) => {
   const mins = casino.minimums[timeframe];
+  if (mins && mins.low) {
+    return mins.low;
+  } else {
+    return null;
+  }
+}
+
+export const getCircleMarkerColor = (value: number | null, scheme: ColorScheme) => {
   let color: string;
 
-  if (!mins) {
+  if (!value) {
     return "#888888";
   }
 
   switch (scheme) {
     case ColorScheme.GRADIENT:
       const colormap = interpolate(["#39ff00", "#045200"]);
-      color = colormap(Math.log10(mins.low) - 0.5);
+      color = colormap(Math.log10(value) - 0.5);
       break;
 
     case ColorScheme.CHIP_COLOR:
     default:
-      if (mins.low < 5) {
-        color = "#ffffff";
-      } else if (mins.low < 10) {
+      if (value < 5) {
+        color = "#fb84ff";
+      } else if (value < 10) {
         color = "#ff0000";
-      } else if (mins.low < 15) {
+      } else if (value < 15) {
         color = "#3333ff";
-      } else if (mins.low < 20) {
+      } else if (value < 20) {
         color = "#aa00ff";
-      } else if (mins.low < 25) {
+      } else if (value < 25) {
         color = "#ffff00";
-      } else if (mins.low < 50) {
+      } else if (value < 50) {
         color = "#00ff00";
       } else {
         color = "#ff6600";
@@ -65,11 +73,11 @@ export const getStandardMarkerIcon = (casino: Casino, timeframe: TimeFrame) => {
   if (cacheEntry) {
     return cacheEntry;
   } else {
-    const newIcon = new L.Icon.Default({
-      className: className
-    });
-    markerIconCache.set(className, newIcon);
-    return newIcon;
+    // const newIcon = new L.Icon.Default({
+    //   className: className
+    // });
+    // markerIconCache.set(className, newIcon);
+    // return newIcon;
   }
 }
 
@@ -97,12 +105,12 @@ export const getChipMarkerIcon = (casino: Casino, timeframe: TimeFrame) => {
   if (cacheEntry) {
     return cacheEntry;
   } else {
-    const newIcon = new L.Icon({
-      iconUrl: "/chip/" + chipName + ".svg",
-      iconAnchor: undefined,  // center?,
-      iconSize: [48, 48]
-    });
-    markerIconCache.set(cacheName, newIcon);
-    return newIcon;
+    // const newIcon = new L.Icon({
+    //   iconUrl: "/chip/" + chipName + ".svg",
+    //   iconAnchor: undefined,  // center?,
+    //   iconSize: [48, 48]
+    // });
+    // markerIconCache.set(cacheName, newIcon);
+    // return newIcon;
   }
 }

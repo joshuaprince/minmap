@@ -5,13 +5,13 @@ import { CircleMarker, MapContainer, TileLayer } from "react-leaflet";
 import { Casino, TimeFrame } from "../interface/casino";
 import { ColorScheme } from "./colorSchemeRadioButtons";
 import { CasinoPopup } from "./casinopopup";
+import { casinoToMin, getCircleMarkerColor } from "./colors";
 
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css";
 import L from "leaflet";
 import "leaflet-defaulticon-compatibility";
 import MapStyles from "../styles/Map.module.scss";
-import { getCircleMarkerColor } from "./colors";
 
 type MapProps = {
   setMap: (map: L.Map) => void
@@ -37,7 +37,7 @@ export class LeafletMap extends React.Component<MapProps> {
     for (const casino of this.markerMap.keys()) {
       const mkr = this.markerMap.get(casino);
       mkr?.setStyle({
-        color: getCircleMarkerColor(casino, this.props.selectedTimeframe, this.props.selectedColorScheme)
+        color: getCircleMarkerColor(casinoToMin(casino, this.props.selectedTimeframe), this.props.selectedColorScheme)
       })
     }
   }
@@ -68,7 +68,7 @@ export class LeafletMap extends React.Component<MapProps> {
                 ref={r => (this.markerMap.set(c, r))}
                 weight={4}
                 fillOpacity={0.5}
-                color={getCircleMarkerColor(c, this.props.selectedTimeframe, this.props.selectedColorScheme)}
+                color={getCircleMarkerColor(casinoToMin(c, this.props.selectedTimeframe), this.props.selectedColorScheme)}
                 // icon={getStandardMarkerIcon(c, props.selectedTimeframe)}
                 key={c.coords.toString() + i}
                 center={c.coords}

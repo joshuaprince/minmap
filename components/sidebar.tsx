@@ -10,6 +10,7 @@ import { ColorScheme, ColorSchemeRadioButtons } from "./colorSchemeRadioButtons"
 import { Search } from "./search";
 import { Casino, TimeFrame } from "../interface/casino";
 import { SidebarLinks } from "../interface/links";
+import { ColorKey } from "./colorKey";
 
 import SidebarStyles from "../styles/Sidebar.module.scss";
 
@@ -82,6 +83,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
             props.selectColorScheme(t);
           }}
         />
+        <ColorKey scheme={props.selectedColorScheme}/>
       </div>
 
       <div className={SidebarStyles.linkIcons}>
