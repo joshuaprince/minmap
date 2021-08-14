@@ -15,7 +15,7 @@ export const Search: React.FC<SearchProps> = (props) => {
     <CUIAutoComplete
       label={"Search"}
       placeholder={"Search for a location..."}
-      items={props.casinos.map(c => ({value: c.name, label: c.name}))}
+      items={props.casinos.map(c => ({value: c.uniqueId.toString(), label: c.name + ", " + c.city + ", " + c.state}))}
       disableCreateItem={true}
       hideToggleButton={true}
       inputStyleProps={{className: SidebarStyles.searchInput}}
@@ -26,7 +26,7 @@ export const Search: React.FC<SearchProps> = (props) => {
         return items.filter(i => i.label.toLowerCase().includes(inputValue.toLowerCase())).slice(0, 6);
       })}
       onSelectedItemsChange={(s) => {
-        const clicked = props.casinos.find(c => c.name === s.selectedItems?.[0]?.label)
+        const clicked = props.casinos.find(c => c.uniqueId.toString() === s.selectedItems?.[0]?.value)
         if (clicked) props.onSelect(clicked);
       }}
     />

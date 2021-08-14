@@ -22,30 +22,39 @@ export const getCasinoDataFromGoogleSheet = async (
 
     if (sheetMap.length === 0) continue;
 
-    /* Transform input data to be consistent */
-    if (sheetName === "Non-Nevada") {
-      /* Non-Nevada sheet: Casino names are split across 3 columns */
-      const combineColHeaders = ["OtherNV Casnio", "City", "State"];
-      for (let rowMap of sheetMap) {
-        const name = combineColHeaders.map(h => rowMap.get(h) || "").join(", ");
-        combineColHeaders.forEach(h => rowMap.delete(h));
-        rowMap.set("Name", name);
-      }
-    } else {
-      /* Other sheets: Casino name is the first column (first added in the Map) */
-      for (let rowMap of sheetMap) {
-        const [nameColHeader, name] = rowMap.entries().next().value;
-        rowMap.delete(nameColHeader);
-        rowMap.set("Name", name);
-      }
-    }
-
     for (let row of sheetMap) {
-      const name = row.get("Name");
+      let name, city, state;
+
+      if (sheetName === "Non-Nevada") {
+        name = row.get("OtherNV Casnio");
+        row.delete("OtherNV Casnio");
+        city = row.get("City");
+        row.delete("City");
+        state = row.get("State");
+        row.delete("State");
+      } else if (sheetName === "Other Nevada") {
+        const [header, value] = row.entries().next().value;  /* first column */
+        const regex = /(.*) \((.*)\)/;  /* split city name out of first column */
+        name = value.match(regex)?.[1]
+        city = value.match(regex)?.[2]
+        state = "NV";
+        row.delete(header);
+      } else {
+        const [header, value] = row.entries().next().value;  /* first column */
+        name = value;
+        city = sheetName;
+        state = "NV";
+        row.delete(header);
+      }
+
       if (!name) throw new Error("Missing casino name from " + row.entries());
-      const coords = coordMap[name] || null;
+      if (!city) throw new Error("Missing city from " + row.entries());
+      if (!state) throw new Error("Missing state from " + row.entries());
+
+      const coordMapKey = name + ", " + city + ", " + state
+      const coords = coordMap[coordMapKey] || null;
       if (!coords) {
-        console.warn("Missing coordinates for " + name);
+        console.warn("Missing coordinates for " + name + ", " + city + ", " + state);
         continue;
       }
 
@@ -68,6 +77,8 @@ export const getCasinoDataFromGoogleSheet = async (
       casinos.push({
         uniqueId: uid++,
         name: name,
+        city: city,
+        state: state,
         coords: coords,
         updated: updated,
         minimums: mins,

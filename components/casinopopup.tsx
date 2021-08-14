@@ -16,6 +16,7 @@ export const CasinoPopup: React.FC<CasinoPopupProps> = (props) => {
   return (
     <Popup className={MapStyles.popup}>
       <h2>{c.name}</h2>
+      <h3>{c.city}, {c.state}</h3>
       <div className={MapStyles.popupMinimums}>
         {Object.values(TimeFrame).map(tf => (
           <div

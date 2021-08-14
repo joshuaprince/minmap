@@ -13,6 +13,8 @@ export type Minimum = null | {
 export type Casino = {
   uniqueId: number
   name: string
+  city: string
+  state: string
   coords: [number, number] | null
   updated: string
 
