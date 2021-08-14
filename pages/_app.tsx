@@ -1,10 +1,26 @@
+import React from "react";
 import Head from "next/head";
 import type { AppProps } from 'next/app'
 import { ChakraProvider } from "@chakra-ui/react"
+import { init as initMatomo } from "@socialgouv/matomo-next";
 
 import '../styles/globals.css'
 
+const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL;
+const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID;
+
 function MyApp({ Component, pageProps }: AppProps) {
+  React.useEffect(() => {
+    console.log(MATOMO_URL + "  " + MATOMO_SITE_ID)
+    if (!MATOMO_URL || !MATOMO_SITE_ID) {
+      console.warn("Matomo disabled.")
+      return;
+    }
+    initMatomo({
+      url: MATOMO_URL, siteId: MATOMO_SITE_ID
+    });
+  }, []);
+
   return (
     <>
       <Head>
