@@ -79,22 +79,20 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
 
 export const getStaticProps: GetStaticProps = async () => {
   const sheetIdMins = process.env.SHEET_ID_MINS;
-  const sheetIdCoords = process.env.SHEET_ID_COORDINATES;
   const sheetsApiKey = process.env.SHEETS_API_KEY;
 
   let casinos: Casino[];
-  if (!sheetIdMins || !sheetIdCoords || !sheetsApiKey) {
+  if (!sheetIdMins || !sheetsApiKey) {
     console.warn("Missing environment variable for backing sheet:");
     console.log(
       "   SHEET_ID_MINS=" + !!sheetIdMins
-      + " SHEET_ID_COORDS=" + !!sheetIdCoords
       + " SHEETS_API_KEY=" + !!sheetsApiKey
     );
     console.log("Falling back to static JSON data.");
     casinos = await getCasinoDataFromJson();
   } else {
-    casinos = await getCasinoDataFromGoogleSheet(sheetIdMins, sheetIdCoords, sheetsApiKey);
-    // console.log(JSON.stringify(casinos));
+    casinos = await getCasinoDataFromGoogleSheet(sheetIdMins, sheetsApiKey);
+    // await dumpCasinoDataToJson(casinos);
   }
 
   const revalidateTime = parseInt(process.env.REVALIDATE_TIME || "") || undefined

@@ -4,15 +4,12 @@ import { Casino, Minimum, TimeFrame } from "../interface/casino";
 
 export const getCasinoDataFromGoogleSheet = async (
   sheetIdMins: string,
-  sheetIdCoords: string,
   apiKey: string,
 ): Promise<Casino[]> => {
   const doc = new GoogleSpreadsheet(sheetIdMins);
   doc.useApiKey(apiKey);
   await doc.loadInfo();
   console.log("Minimums sheet title: " + doc.title);
-
-  const coordMap = await getCoordinateMap(sheetIdCoords, apiKey);
 
   let casinos: Casino[] = [];
   let uid = 0;
@@ -51,12 +48,12 @@ export const getCasinoDataFromGoogleSheet = async (
       if (!city) throw new Error("Missing city from " + row.entries());
       if (!state) throw new Error("Missing state from " + row.entries());
 
-      const coordMapKey = name + ", " + city + ", " + state
-      const coords = coordMap[coordMapKey] || null;
+      const coords = parseCoords(row.get("Coordinates"));
       if (!coords) {
-        console.warn("Missing coordinates for " + name + ", " + city + ", " + state);
+        console.warn("Missing or mis-formatted coordinates for " + name + ", " + city + ", " + state);
         continue;
       }
+      row.delete("Coordinates");
 
       let mins: any = {}
       let updated: string = "Unknown"
@@ -90,40 +87,6 @@ export const getCasinoDataFromGoogleSheet = async (
   return casinos;
 }
 
-/**
- * Get a mapping from Casino name to its coordinates in the world, by referring to
- * https://docs.google.com/spreadsheets/d/1RWX7TwDwgV2glC2MxuPCVaTbNIoUDiMrKQh_vBBT3j0/edit#gid=0
- */
-const getCoordinateMap = async (sheetId: string, apiKey: string) => {
-  const HEADER_ROW_ID = 0;
-  const NAME_COL_ID = 0;
-  const LAT_COL_ID = 1;
-  const LON_COL_ID = 2;
-
-  const doc = new GoogleSpreadsheet(sheetId);
-  doc.useApiKey(apiKey)
-  await doc.loadInfo();
-  console.log("Coordinates sheet title: " + doc.title);
-  const sheet = doc.sheetsByIndex[0]
-  await sheet.loadCells()
-
-  let ret: { [key: string]: [number, number] | null } = {};
-  for (let row = HEADER_ROW_ID + 1;; row++) {
-    const casinoName = sheet.getCell(row, NAME_COL_ID).value?.toString();
-    if (!casinoName) break;
-
-    const lat = parseFloat(sheet.getCell(row, LAT_COL_ID).formattedValue);
-    const lon = parseFloat(sheet.getCell(row, LON_COL_ID).formattedValue);
-    if (!lat || !lon) {
-      ret[casinoName] = null;
-    } else {
-      ret[casinoName] = [lat, lon];
-    }
-  }
-
-  return ret;
-}
-
 const parseMinimum = (value: string): Minimum => {
   if (value.match(/^\d+$/)) {
     return { low: parseInt(value), high: null };
@@ -135,6 +98,18 @@ const parseMinimum = (value: string): Minimum => {
   }
 
   return null;
+}
+
+const parseCoords = (value: string | undefined): [number, number] | null => {
+  if (!value) return null;
+
+  const regex = /([\d.-]+)\s*,\s*([\d.-]+)/;
+  const match = value.match(regex);
+  if (!match) {
+    return null;
+  }
+
+  return [parseFloat(match[1]), parseFloat(match[2])];
 }
 
 const sheetToKeyValues = (
