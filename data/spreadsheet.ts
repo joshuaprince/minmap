@@ -5,6 +5,7 @@ import { Casino, Minimum, TimeFrame } from "../interface/casino";
 export const getCasinoDataFromGoogleSheet = async (
   sheetIdMins: string,
   apiKey: string,
+  ignoredSheets: string[] = [],
 ): Promise<Casino[]> => {
   const doc = new GoogleSpreadsheet(sheetIdMins);
   doc.useApiKey(apiKey);
@@ -14,6 +15,8 @@ export const getCasinoDataFromGoogleSheet = async (
   let casinos: Casino[] = [];
   let uid = 0;
   for (const [sheetName, sheet] of Object.entries(doc.sheetsByTitle)) {
+    if (ignoredSheets?.includes(sheetName)) continue;
+
     await sheet.loadCells();
     const sheetMap = sheetToKeyValues(sheetName, sheet);
 
@@ -21,27 +24,29 @@ export const getCasinoDataFromGoogleSheet = async (
 
     for (let row of sheetMap) {
       let name, city, state;
-
-      if (sheetName === "Non-Nevada") {
-        name = row.get("OtherNV Casnio");
-        row.delete("OtherNV Casnio");
-        city = row.get("City");
-        row.delete("City");
-        state = row.get("State");
-        row.delete("State");
-      } else if (sheetName === "Other Nevada") {
-        const [header, value] = row.entries().next().value;  /* first column */
-        const regex = /(.*) \((.*)\)/;  /* split city name out of first column */
-        name = value.match(regex)?.[1]
-        city = value.match(regex)?.[2]
-        state = "NV";
-        row.delete(header);
-      } else {
-        const [header, value] = row.entries().next().value;  /* first column */
-        name = value;
-        city = sheetName;
-        state = "NV";
-        row.delete(header);
+      switch (sheetName) {
+        case "Non-Nevada":
+          name = row.get("OtherNV Casnio");
+          row.delete("OtherNV Casnio");
+          city = row.get("City");
+          row.delete("City");
+          state = row.get("State");
+          row.delete("State");
+          break;
+        case "Other Nevada":
+          const [hdr, vlu] = row.entries().next().value;  /* first column */
+          const regex = /(.*) \((.*)\)/;  /* split city name out of first column */
+          name = vlu.match(regex)?.[1]
+          city = vlu.match(regex)?.[2]
+          state = "NV";
+          row.delete(hdr);
+          break;
+        default:
+          const [header, value] = row.entries().next().value;  /* first column */
+          name = value;
+          city = sheetName;
+          state = "NV";
+          row.delete(header);
       }
 
       if (!name) throw new Error("Missing casino name from " + row.entries());

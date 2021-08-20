@@ -80,6 +80,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
 export const getStaticProps: GetStaticProps = async () => {
   const sheetIdMins = process.env.SHEET_ID_MINS;
   const sheetsApiKey = process.env.SHEETS_API_KEY;
+  const ignoredSheets = process.env.IGNORED_SHEETS?.split(";");
 
   let casinos: Casino[];
   if (!sheetIdMins || !sheetsApiKey) {
@@ -91,7 +92,7 @@ export const getStaticProps: GetStaticProps = async () => {
     console.log("Falling back to static JSON data.");
     casinos = await getCasinoDataFromJson();
   } else {
-    casinos = await getCasinoDataFromGoogleSheet(sheetIdMins, sheetsApiKey);
+    casinos = await getCasinoDataFromGoogleSheet(sheetIdMins, sheetsApiKey, ignoredSheets);
     // await dumpCasinoDataToJson(casinos);
   }
 
