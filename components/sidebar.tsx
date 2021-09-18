@@ -14,9 +14,11 @@ import { ColorKey } from "./colorKey";
 
 import SidebarStyles from "../styles/Sidebar.module.scss";
 
+export type SidebarToggleMethod = "pageLoad" | "clickShow" | "clickHide" | "searchHide" | "buttonHide";
+
 type SidebarProps = {
   shown?: boolean  /* If undefined, determine visibility by media query */
-  setShown: (s: boolean) => void
+  setShown: (s: boolean, method: SidebarToggleMethod) => void
   selectedTimeframe: TimeFrame
   selectTimeframe: (t: TimeFrame) => void
   selectedColorScheme: ColorScheme
@@ -32,7 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
    * the matchMedia to useState above because `window` is not available for SSR. Also,
    * useMediaQuery does not appear to work for initialState, likely also due to SSR issues. */
   React.useEffect(() => {
-    props.setShown(!shouldHideByDefault());
+    props.setShown(!shouldHideByDefault(), "pageLoad");
   }, []);  /* No deps => only runs at first render */
 
   const isTap = useMediaQuery({ query: "(hover: none)" });
@@ -60,7 +62,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       <div className={SidebarStyles.searchContainer}>
         <h2>Search</h2>
         <Search casinos={props.casinos} onSelect={(c) => {
-          if (shouldHideByDefault()) props.setShown(false);
+          if (shouldHideByDefault()) props.setShown(false, "searchHide");
           props.scrollTo(c);
         }}/>
       </div>
@@ -71,7 +73,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         <TimeframeRadioButtons
           value={props.selectedTimeframe}
           update={(t) => {
-            if (shouldHideByDefault()) props.setShown(false);
+            if (shouldHideByDefault()) props.setShown(false, "buttonHide");
             props.selectTimeframe(t);
           }}
         />
@@ -79,7 +81,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         <ColorSchemeRadioButtons
           value={props.selectedColorScheme}
           update={(t) => {
-            if (shouldHideByDefault()) props.setShown(false);
+            if (shouldHideByDefault()) props.setShown(false, "buttonHide");
             props.selectColorScheme(t);
           }}
         />
@@ -126,7 +128,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         SidebarStyles.sidebarButton,
         { [SidebarStyles.shown]: props.shown }
       )}
-      onClick={() => props.setShown(!props.shown)}
+      onClick={() => props.setShown(!props.shown, props.shown ? "clickHide" : "clickShow")}
     >
       <FontAwesomeIcon icon={faBars}/>
     </div>
@@ -139,7 +141,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       {/* CLOSE button */}
       <button
         className={SidebarStyles.sidebarCloseButton}
-        onClick={() => props.setShown(false)}
+        onClick={() => props.setShown(false, "clickHide")}
       >
         <FontAwesomeIcon icon={faTimes}/>
       </button>

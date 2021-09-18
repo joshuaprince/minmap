@@ -2,10 +2,11 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { Map as LeafletMap } from "leaflet";
+import { push as matomo } from "@socialgouv/matomo-next";
 
 import { Casino, TimeFrame } from "../interface/casino";
 import { ColorScheme } from "../components/colorSchemeRadioButtons";
-import { Sidebar } from "../components/sidebar";
+import { Sidebar, SidebarToggleMethod } from "../components/sidebar";
 import { getCasinoDataFromJson } from "../data/json";
 import { getCasinoDataFromGoogleSheet } from "../data/spreadsheet";
 
@@ -29,6 +30,24 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
     selectedColorScheme: ColorScheme.CHIP_COLOR,
     sidebarOpen: true,
   });
+
+  const setSidebarShown = (shown: boolean, method: SidebarToggleMethod) => {
+    setState((st) => ({...st, sidebarOpen: shown}));
+    setTimeout(() => state.map?.invalidateSize(), 350);
+    if (method !== "pageLoad") {
+      matomo(["trackEvent", "ToggleSidebar", method]);
+    }
+  }
+
+  const setTimeframe = (t: TimeFrame) => {
+    setState(s => ({...s, selectedTimeframe: t}));
+    matomo(["trackEvent", "SelectTimeframe", t]);
+  }
+
+  const setColorScheme = (c: ColorScheme) => {
+    setState(s => ({...s, selectedColorScheme: c}));
+    matomo(["trackEvent", "SelectColorScheme", c]);
+  }
 
   let mapDiv;
   if (casinos !== undefined) {
@@ -54,14 +73,11 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
       {mapDiv}
       <Sidebar
         shown={state.sidebarOpen}
-        setShown={(s) => {
-          setState((st) => ({...st, sidebarOpen: s}));
-          setTimeout(() => state.map?.invalidateSize(), 350);
-        }}
+        setShown={setSidebarShown}
         selectedTimeframe={state.selectedTimeframe}
-        selectTimeframe={(t: TimeFrame) => setState(s => ({...s, selectedTimeframe: t}))}
+        selectTimeframe={setTimeframe}
         selectedColorScheme={state.selectedColorScheme}
-        selectColorScheme={(c: ColorScheme) => setState(s => ({...s, selectedColorScheme: c}))}
+        selectColorScheme={setColorScheme}
         casinos={casinos}
         scrollTo={(c) => {
           state.map?.flyTo(c.coords!, 15, {duration: 0.5, easeLinearity: 1});
