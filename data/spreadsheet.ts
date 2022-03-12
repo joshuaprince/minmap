@@ -56,7 +56,6 @@ export const getCasinoDataFromGoogleSheet = async (
       const coords = parseCoords(row.get("Coordinates"));
       if (!coords) {
         console.warn("Missing or mis-formatted coordinates for " + name + ", " + city + ", " + state);
-        continue;
       }
       row.delete("Coordinates");
 

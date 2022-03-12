@@ -29,6 +29,10 @@ type SidebarProps = {
   lastUpdateJson: string
 }
 
+type SidebarState = {
+  missingCasinosShown: boolean
+}
+
 export const Sidebar: React.FC<SidebarProps> = (props) => {
   /* On smaller screens, hide the sidebar at page load. We have to useEffect here instead of passing
    * the matchMedia to useState above because `window` is not available for SSR. Also,
@@ -36,6 +40,8 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   React.useEffect(() => {
     props.setShown(!shouldHideByDefault(), "pageLoad");
   }, []);  /* No deps => only runs at first render */
+
+  const [state, setState] = React.useState<SidebarState>({missingCasinosShown: false});
 
   const isTap = useMediaQuery({ query: "(hover: none)" });
 
@@ -89,10 +95,28 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       </div>
 
       <div className={SidebarStyles.linkIcons}>
-        <a target="_blank" rel="noopener noreferrer" href="https://github.com/joshuaprince/minmap" title={"GitHub"}>
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/joshuaprince/minmap" title={"GitHub"}
+           onClick={(e) => {
+             /* Secret developer display - hold Shift and Ctrl and click the Github icon */
+             if (e.ctrlKey && e.shiftKey) {
+               e.preventDefault();
+               setState(s => ({...s, missingCasinosShown: !s.missingCasinosShown}));
+             }
+           }}
+        >
           <FontAwesomeIcon icon={faGithub}/>
         </a>
       </div>
+
+      {state.missingCasinosShown &&
+        <textarea className={SidebarStyles.missingCasinos} value={
+          "Casinos that are Missing Coordinates:\n" + props.casinos
+            .filter(c => c.coords === null)
+            .map(c => c.city + ", " + c.state + ": " + c.name)
+            .join("\n")
+        }/>
+      }
+
       <div className={SidebarStyles.attributions}>
         <div>
           Last update from spreadsheet: {new Date(props.lastUpdateJson).toLocaleString()}
