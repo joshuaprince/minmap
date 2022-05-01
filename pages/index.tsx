@@ -78,9 +78,13 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
         selectTimeframe={setTimeframe}
         selectedColorScheme={state.selectedColorScheme}
         selectColorScheme={setColorScheme}
-        casinos={casinos}
+        casinos={casinos.filter((c: Casino) => c.coords)}
         scrollTo={(c) => {
-          state.map?.flyTo(c.coords!, 15, {duration: 0.5, easeLinearity: 1});
+          if (!c.coords) {
+            alert("Coordinates are missing from the spreadsheet for " + c.name + ".");
+            return;
+          }
+          state.map?.flyTo(c.coords, 15, {duration: 0.5, easeLinearity: 1});
           if (state.openPopup) state.openPopup(c);
         }}
         links={{
