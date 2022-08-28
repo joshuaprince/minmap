@@ -11,7 +11,6 @@ import { getCasinoDataFromJson } from "../data/json";
 import { getCasinoDataFromGoogleSheet } from "../data/spreadsheet";
 
 type HomeState = {
-  map?: LeafletMap
   selectedTimeframe: TimeFrame
   selectedColorScheme: ColorScheme
   sidebarOpen: boolean
@@ -25,15 +24,16 @@ const DynamicMap = dynamic(
 
 export default function Home({ casinos, updated }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [state, setState] = React.useState<HomeState>({
-    map: undefined,
     selectedTimeframe: TimeFrame.WEEKDAY,
     selectedColorScheme: ColorScheme.CHIP_COLOR,
     sidebarOpen: true,
   });
 
+  const mapRef = React.useRef<LeafletMap>(null);
+
   const setSidebarShown = (shown: boolean, method: SidebarToggleMethod) => {
     setState((st) => ({...st, sidebarOpen: shown}));
-    setTimeout(() => state.map?.invalidateSize(), 350);
+    setTimeout(() => mapRef.current?.invalidateSize(), 350);
     if (method !== "pageLoad") {
       matomo(["trackEvent", "ToggleSidebar", method]);
     }
@@ -54,7 +54,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
     mapDiv = (
       <DynamicMap
         key={1}
-        setMap={(m) => setState(s => ({...s, map: m}))}
+        mapRef={mapRef}
         selectedTimeframe={state.selectedTimeframe}
         selectedColorScheme={state.selectedColorScheme}
         casinos={casinos}
@@ -84,7 +84,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
             alert("Coordinates are missing from the spreadsheet for " + c.name + ".");
             return;
           }
-          state.map?.flyTo(c.coords, 15, {duration: 0.5, easeLinearity: 1});
+          mapRef.current?.flyTo(c.coords, 15, {duration: 0.5, easeLinearity: 1});
           if (state.openPopup) state.openPopup(c);
         }}
         links={{

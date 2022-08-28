@@ -26,8 +26,8 @@ export const getCasinoDataFromGoogleSheet = async (
       let name, city, state;
       switch (sheetName) {
         case "Non-Nevada":
-          name = row.get("OtherNV Casnio");
-          row.delete("OtherNV Casnio");
+          name = row.get("OtherNV Casino");
+          row.delete("OtherNV Casino");
           city = row.get("City");
           row.delete("City");
           state = row.get("State");
@@ -49,9 +49,9 @@ export const getCasinoDataFromGoogleSheet = async (
           row.delete(header);
       }
 
-      if (!name) throw new Error("Missing casino name from " + row.entries());
-      if (!city) throw new Error("Missing city from " + row.entries());
-      if (!state) throw new Error("Missing state from " + row.entries());
+      if (!name) throw new Error("Missing casino name from " + [...row.entries()]);
+      if (!city) throw new Error("Missing city from " + [...row.entries()]);
+      if (!state) throw new Error("Missing state from " + [...row.entries()]);
 
       const coords = parseCoords(row.get("Coordinates"));
       if (!coords) {

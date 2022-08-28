@@ -14,7 +14,7 @@ import "leaflet-defaulticon-compatibility";
 import MapStyles from "../styles/Map.module.scss";
 
 type MapProps = {
-  setMap: (map: L.Map) => void
+  mapRef: React.Ref<L.Map>
   casinos: Casino[]
   selectedTimeframe: TimeFrame
   selectedColorScheme: ColorScheme
@@ -47,7 +47,7 @@ export class LeafletMap extends React.Component<MapProps> {
       <div className={classNames(MapStyles.mapDiv, {[MapStyles.sidebarShown]: this.props.sidebarShown})}>
         <MapContainer
           preferCanvas={true}
-          whenCreated={this.props.setMap}
+          ref={this.props.mapRef}
           className={MapStyles.minmapContainer}
           center={[36.11095, -115.17285]}
           zoom={13}

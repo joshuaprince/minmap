@@ -40,7 +40,7 @@ export const ColorSchemeRadioButtons: React.FC<ColorSchemeButtonsProps> = (props
 }
 
 /* TODO: could be deduped with TimeFrame */
-const RadioCard: React.FC<UseRadioProps> = (props) => {
+const RadioCard: React.FC<React.PropsWithChildren<UseRadioProps>> = (props) => {
   const { getInputProps, getCheckboxProps } = useRadio(props);
 
   const input = getInputProps();

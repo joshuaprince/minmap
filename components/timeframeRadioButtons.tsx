@@ -35,7 +35,7 @@ export const TimeframeRadioButtons: React.FC<TimeframeRadioButtonsProps> = (prop
   )
 }
 
-const RadioCard: React.FC<UseRadioProps> = (props) => {
+const RadioCard: React.FC<React.PropsWithChildren<UseRadioProps>> = (props) => {
   const { getInputProps, getCheckboxProps } = useRadio(props);
 
   const input = getInputProps();
