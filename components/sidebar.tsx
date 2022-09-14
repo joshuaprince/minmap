@@ -43,13 +43,15 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
   const [state, setState] = React.useState<SidebarState>({missingCasinosShown: false});
 
-  const isTap = useMediaQuery({ query: "(hover: none)" });
-
   /* Fix React/Vercel SSR bug - https://github.com/vercel/next.js/discussions/38263 */
+  const [mounted, setMounted] = React.useState(false);
   const [updateTimeLocalized, setUpdateTimeLocalized] = React.useState(props.lastUpdateJsonUtc);
   React.useEffect(() => {
-    setUpdateTimeLocalized(() => new Date(props.lastUpdateJsonUtc).toLocaleString())
+    setUpdateTimeLocalized(() => new Date(props.lastUpdateJsonUtc).toLocaleString());
+    setMounted(true);
   }, [props.lastUpdateJsonUtc])
+
+  const isTap = useMediaQuery({ query: "(hover: none)" }) && mounted;
 
   const sidebarContent = (
     <div className={SidebarStyles.sidebarContent}>
