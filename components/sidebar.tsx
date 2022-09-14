@@ -119,7 +119,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
       <div className={SidebarStyles.attributions}>
         <div>
-          Last update from spreadsheet: {new Date(props.lastUpdateJson).toLocaleString()}
+          Last update from spreadsheet: no
         </div>
         <div>
           Built by <a target="_blank" rel="noopener noreferrer" href="https://github.com/joshuaprince">Joshua Prince</a>.
