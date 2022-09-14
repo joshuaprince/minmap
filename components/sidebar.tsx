@@ -26,7 +26,7 @@ type SidebarProps = {
   casinos: Casino[]
   scrollTo: (casino: Casino) => void
   links: SidebarLinks
-  lastUpdateJson: string
+  lastUpdateJsonUtc: string
 }
 
 type SidebarState = {
@@ -44,6 +44,12 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   const [state, setState] = React.useState<SidebarState>({missingCasinosShown: false});
 
   const isTap = useMediaQuery({ query: "(hover: none)" });
+
+  /* Fix React/Vercel SSR bug - https://github.com/vercel/next.js/discussions/38263 */
+  const [updateTimeLocalized, setUpdateTimeLocalized] = React.useState(props.lastUpdateJsonUtc);
+  React.useEffect(() => {
+    setUpdateTimeLocalized(() => new Date(props.lastUpdateJsonUtc).toLocaleString())
+  }, [props.lastUpdateJsonUtc])
 
   const sidebarContent = (
     <div className={SidebarStyles.sidebarContent}>
@@ -119,7 +125,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
       <div className={SidebarStyles.attributions}>
         <div>
-          Last update from spreadsheet: no
+          Last update from spreadsheet: {updateTimeLocalized}
         </div>
         <div>
           Built by <a target="_blank" rel="noopener noreferrer" href="https://github.com/joshuaprince">Joshua Prince</a>.
