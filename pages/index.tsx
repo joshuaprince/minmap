@@ -91,7 +91,7 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
           spreadsheetComments: process.env.LINK_SPREADSHEET_COMMENTS!,
           spreadsheetDirect: process.env.LINK_SPREADSHEET_DIRECT!,
         }}
-        lastUpdateJson={updated}
+        lastUpdateJsonUtc={updated}
       />
     </>
   );
