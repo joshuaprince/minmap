@@ -143,12 +143,30 @@ const sheetToKeyValues = (
     console.error("Missing " + header + " header from sheet " + sheetName + ".");
   }
 
+  /* Enumerate hidden columns except the Coordinates column */
+  let hiddenColumns = [];
+  try {
+    for (const colNumStr in (sheet as any)._columnMetadata) {
+      const colNum = Number(colNumStr);
+      // No clean API for this in google-spreadsheet.
+      const hidden = ((sheet as any)._columnMetadata[colNum].hiddenByUser) as boolean;
+      if (hidden && headerName.get(colNum) !== "Coordinates") {
+        hiddenColumns.push(colNum);
+      }
+    }
+    console.log("Sheet " + sheetName + " using hidden columns: " + hiddenColumns);
+  } catch (e) {
+    console.error("Sheet " + sheetName + " failed to get hidden columns: " + e);
+  }
+
   outer:
   for (let row = HEADER_ROW_ID + 1;; row++) {
     const mapForRow = new Map<string, string>();
     for (let [col, header] of headerName) {
       const cellText = sheet.getCell(row, col).formattedValue;
       if (col === GUARANTEED_COL_ID && !cellText) break outer;
+      if (hiddenColumns.includes(col)) continue;
+
       mapForRow.set(header, cellText || "");
     }
     ret.push(mapForRow);
