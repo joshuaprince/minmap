@@ -2,7 +2,6 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { Map as LeafletMap } from "leaflet";
-import { push as matomo } from "@socialgouv/matomo-next";
 
 import { Casino, TimeFrame } from "../interface/casino";
 import { ColorScheme } from "../components/colorSchemeRadioButtons";
@@ -34,19 +33,14 @@ export default function Home({ casinos, updated }: InferGetStaticPropsType<typeo
   const setSidebarShown = (shown: boolean, method: SidebarToggleMethod) => {
     setState((st) => ({...st, sidebarOpen: shown}));
     setTimeout(() => mapRef.current?.invalidateSize(), 350);
-    if (method !== "pageLoad") {
-      matomo(["trackEvent", "ToggleSidebar", method]);
-    }
   }
 
   const setTimeframe = (t: TimeFrame) => {
     setState(s => ({...s, selectedTimeframe: t}));
-    matomo(["trackEvent", "SelectTimeframe", t]);
   }
 
   const setColorScheme = (c: ColorScheme) => {
     setState(s => ({...s, selectedColorScheme: c}));
-    matomo(["trackEvent", "SelectColorScheme", c]);
   }
 
   let mapDiv;
