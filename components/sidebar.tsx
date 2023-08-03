@@ -58,6 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   const [updateTimeLocalized, setUpdateTimeLocalized] = React.useState(props.lastUpdateJsonUtc);
   React.useEffect(() => {
     setUpdateTimeLocalized(() => new Date(props.lastUpdateJsonUtc).toLocaleString());
+    props.selectTimeframe(timeframeOfCurrentTime());
     setMounted(true);
   }, [props.lastUpdateJsonUtc])
 
@@ -196,4 +197,19 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
 const shouldHideByDefault = () => {
   return window.matchMedia("(max-width: 960px)").matches;
+}
+
+const timeframeOfCurrentTime = () => {
+  const now = new Date();
+
+  const isNight = now.getHours() >= 18 || now.getHours() <= 5;
+  const isWeekend = now.getDay() == 0 /* Sunday */
+    || now.getDay() == 6 /* Saturday */
+    || (isNight && now.getDay() == 5); /* Friday (but only Friday night counts as a weekend) */
+
+  if (isNight) {
+    return isWeekend ? TimeFrame.WEEKENDNIGHT : TimeFrame.WEEKNIGHT;
+  } else {
+    return isWeekend ? TimeFrame.WEEKEND : TimeFrame.WEEKDAY;
+  }
 }
