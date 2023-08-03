@@ -10,7 +10,12 @@ import {
   CircleMarker,
   MapContainer,
   TileLayer,
+  useMapEvents,
 } from "react-leaflet";
+import Control from "react-leaflet-custom-control";
+
+import { faLocationCrosshairs } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   Casino,
@@ -25,7 +30,7 @@ import {
 import { ColorScheme } from "./colorSchemeRadioButtons";
 
 type MapProps = {
-  mapRef: React.Ref<L.Map>
+  mapRef: React.RefObject<L.Map>
   casinos: Casino[]
   selectedTimeframe: TimeFrame
   selectedColorScheme: ColorScheme
@@ -63,6 +68,7 @@ export class LeafletMap extends React.Component<MapProps> {
           center={[36.11095, -115.17285]}
           zoom={13}
         >
+          <Events map={this.props}/>
           <TileLayer
             detectRetina={true}
             attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -89,10 +95,28 @@ export class LeafletMap extends React.Component<MapProps> {
               </CircleMarker>
             )
           })}
+          <Control position="bottomleft" container={{ className: classNames("leaflet-bar", "leaflet-control") }}>
+            <a color="inherit" role="button" className={classNames(MapStyles.locationButton)} onClick={() => this.props.mapRef?.current?.locate()}>
+              <FontAwesomeIcon className={MapStyles.locationIcon} icon={faLocationCrosshairs}/>
+            </a>
+          </Control>
         </MapContainer>
       </div>
     );
   }
+}
+
+function Events(props: {map: MapProps}) {
+  useMapEvents({
+    locationfound(e) {
+      props.map.mapRef?.current?.flyTo(e.latlng, 10, {duration: 1})
+    },
+    locationerror(e) {
+      // props.map.mapRef?.current?.flyTo(new L.LatLng(40, -75), 10, {duration: 1})
+      alert("Couldn't locate you: " + e.message)
+    }
+  });
+  return null;
 }
 
 export default LeafletMap;

@@ -6,6 +6,7 @@ import { useMediaQuery } from "react-responsive";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import {
   faBars,
+  faLocationCrosshairs,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -76,7 +77,8 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/cochran10">@cochran10</a>.
       </p>
       <p>
-        {isTap ? "Tap" : "Click on"} a location on the map to see more information about it.
+        {isTap ? "Tap" : "Click on"} a location on the map to see more information about it.{" "}
+        {isTap ? "Tap" : "Click"} the <FontAwesomeIcon style={{height: "1em", display: "inline"}} icon={faLocationCrosshairs}/> button in the lower left to scroll to your current location.
       </p>
       <p>
         <b>All data is user-reported and not guaranteed to be accurate.</b> If any data is incorrect

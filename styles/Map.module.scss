@@ -46,6 +46,15 @@
   }
 }
 
+.locationButton {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  .locationIcon {
+    height: 60%;
+  }
+}
+
 /** POPUP STYLES **/
 
 .popup {
