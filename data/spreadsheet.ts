@@ -7,8 +7,7 @@ export const getCasinoDataFromGoogleSheet = async (
   apiKey: string,
   ignoredSheets: string[] = [],
 ): Promise<Casino[]> => {
-  const doc = new GoogleSpreadsheet(sheetIdMins);
-  doc.useApiKey(apiKey);
+  const doc = new GoogleSpreadsheet(sheetIdMins, { apiKey });
   await doc.loadInfo();
   console.log("Minimums sheet title: " + doc.title);
 
@@ -130,7 +129,7 @@ const sheetToKeyValues = (
   let headerName = new Map<number, string>();
   let cell: GoogleSpreadsheetCell;
   for (let col = 0; (cell = sheet.getCell(HEADER_ROW_ID, col)); col++) {
-    if (!cell.value) break;
+    if (!cell.value || !cell.formattedValue) break;
     headerName.set(col, cell.formattedValue);
   }
 
