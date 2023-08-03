@@ -1,8 +1,13 @@
 import React from "react";
-import { useRadio, useRadioGroup, UseRadioProps } from "@chakra-ui/radio";
-import { Box } from "@chakra-ui/react";
-import { TimeFrame } from "../interface/casino";
 
+import {
+  useRadio,
+  useRadioGroup,
+  UseRadioProps,
+} from "@chakra-ui/radio";
+import { Box } from "@chakra-ui/react";
+
+import { TimeFrame } from "../interface/casino";
 import SidebarStyles from "../styles/Sidebar.module.scss";
 
 export type TimeframeRadioButtonsProps = {

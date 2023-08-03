@@ -1,18 +1,28 @@
 import React from "react";
+
 import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faGithub } from "@fortawesome/free-brands-svg-icons"
-import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { useMediaQuery } from "react-responsive";
 
-import { TimeframeRadioButtons } from "./timeframeRadioButtons";
-import { ColorScheme, ColorSchemeRadioButtons } from "./colorSchemeRadioButtons";
-import { Search } from "./search";
-import { Casino, TimeFrame } from "../interface/casino";
-import { SidebarLinks } from "../interface/links";
-import { ColorKey } from "./colorKey";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import {
+  faBars,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import {
+  Casino,
+  TimeFrame,
+} from "../interface/casino";
+import { SidebarLinks } from "../interface/links";
 import SidebarStyles from "../styles/Sidebar.module.scss";
+import { ColorKey } from "./colorKey";
+import {
+  ColorScheme,
+  ColorSchemeRadioButtons,
+} from "./colorSchemeRadioButtons";
+import { Search } from "./search";
+import { TimeframeRadioButtons } from "./timeframeRadioButtons";
 
 export type SidebarToggleMethod = "pageLoad" | "clickShow" | "clickHide" | "searchHide" | "buttonHide";
 

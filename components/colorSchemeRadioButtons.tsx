@@ -1,5 +1,10 @@
 import React from "react";
-import { useRadio, useRadioGroup, UseRadioProps } from "@chakra-ui/radio";
+
+import {
+  useRadio,
+  useRadioGroup,
+  UseRadioProps,
+} from "@chakra-ui/radio";
 import { Box } from "@chakra-ui/react";
 
 import SidebarStyles from "../styles/Sidebar.module.scss";

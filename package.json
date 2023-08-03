@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.0",
@@ -38,6 +39,15 @@
     "@types/react": "^18.2.18",
     "eslint": "^8.46.0",
     "eslint-config-next": "^13.4.12",
+    "format-imports": "^3.2.5",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
     "typescript": "^5.1.6"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": "yarn format-imports"
+  },
+  "importSorter": {
+    "quoteMark": "double"
   }
 }

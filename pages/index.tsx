@@ -1,13 +1,23 @@
 import React from "react";
-import dynamic from "next/dynamic";
-import { GetStaticProps, InferGetStaticPropsType } from "next";
-import { Map as LeafletMap } from "leaflet";
 
-import { Casino, TimeFrame } from "../interface/casino";
+import { Map as LeafletMap } from "leaflet";
+import {
+  GetStaticProps,
+  InferGetStaticPropsType,
+} from "next";
+import dynamic from "next/dynamic";
+
 import { ColorScheme } from "../components/colorSchemeRadioButtons";
-import { Sidebar, SidebarToggleMethod } from "../components/sidebar";
+import {
+  Sidebar,
+  SidebarToggleMethod,
+} from "../components/sidebar";
 import { getCasinoDataFromJson } from "../data/json";
 import { getCasinoDataFromGoogleSheet } from "../data/spreadsheet";
+import {
+  Casino,
+  TimeFrame,
+} from "../interface/casino";
 
 type HomeState = {
   selectedTimeframe: TimeFrame

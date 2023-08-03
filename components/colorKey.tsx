@@ -1,9 +1,10 @@
 import React from "react";
-import { ColorScheme } from "./colorSchemeRadioButtons";
+
+import interpolate from "color-interpolate";
 
 import SidebarStyles from "../styles/Sidebar.module.scss";
 import { getCircleMarkerColor } from "./colors";
-import interpolate from "color-interpolate";
+import { ColorScheme } from "./colorSchemeRadioButtons";
 
 type ColorKeyProps = {
   scheme: ColorScheme

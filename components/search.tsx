@@ -1,8 +1,8 @@
 import React from "react";
+
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
 
 import { Casino } from "../interface/casino";
-
 import SidebarStyles from "../styles/Sidebar.module.scss";
 
 type SearchProps = {

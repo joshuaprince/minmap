@@ -1,6 +1,14 @@
-import { GoogleSpreadsheet, GoogleSpreadsheetCell, GoogleSpreadsheetWorksheet } from "google-spreadsheet";
+import {
+  GoogleSpreadsheet,
+  GoogleSpreadsheetCell,
+  GoogleSpreadsheetWorksheet,
+} from "google-spreadsheet";
 
-import { Casino, Minimum, TimeFrame } from "../interface/casino";
+import {
+  Casino,
+  Minimum,
+  TimeFrame,
+} from "../interface/casino";
 
 export const getCasinoDataFromGoogleSheet = async (
   sheetIdMins: string,

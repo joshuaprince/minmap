@@ -1,10 +1,14 @@
 import React from "react";
+
+import classNames from "classnames";
 import { Popup } from "react-leaflet";
 
-import { Casino, Minimum, TimeFrame } from "../interface/casino";
-
-import MapStyles from "../styles/Map.module.scss"
-import classNames from "classnames";
+import {
+  Casino,
+  Minimum,
+  TimeFrame,
+} from "../interface/casino";
+import MapStyles from "../styles/Map.module.scss";
 
 type CasinoPopupProps = {
   casino: Casino

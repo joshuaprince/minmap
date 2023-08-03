@@ -1,17 +1,28 @@
-import React from "react";
-import classNames from "classnames";
-import { CircleMarker, MapContainer, TileLayer } from "react-leaflet";
-
-import { Casino, TimeFrame } from "../interface/casino";
-import { ColorScheme } from "./colorSchemeRadioButtons";
-import { CasinoPopup } from "./casinopopup";
-import { casinoToMin, getCircleMarkerColor } from "./colors";
-
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css";
-import L from "leaflet";
 import "leaflet-defaulticon-compatibility";
+
+import React from "react";
+
+import classNames from "classnames";
+import L from "leaflet";
+import {
+  CircleMarker,
+  MapContainer,
+  TileLayer,
+} from "react-leaflet";
+
+import {
+  Casino,
+  TimeFrame,
+} from "../interface/casino";
 import MapStyles from "../styles/Map.module.scss";
+import { CasinoPopup } from "./casinopopup";
+import {
+  casinoToMin,
+  getCircleMarkerColor,
+} from "./colors";
+import { ColorScheme } from "./colorSchemeRadioButtons";
 
 type MapProps = {
   mapRef: React.Ref<L.Map>

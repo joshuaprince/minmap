@@ -1,8 +1,12 @@
-import { Casino, TimeFrame } from "../interface/casino";
-import { ColorScheme } from "./colorSchemeRadioButtons";
 import interpolate from "color-interpolate";
 import type L from "leaflet";
+
+import {
+  Casino,
+  TimeFrame,
+} from "../interface/casino";
 import MapStyles from "../styles/Map.module.scss";
+import { ColorScheme } from "./colorSchemeRadioButtons";
 
 export const casinoToMin = (casino: Casino, timeframe: TimeFrame) => {
   const mins = casino.minimums[timeframe];
