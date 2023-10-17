@@ -33,8 +33,8 @@ export const getCasinoDataFromGoogleSheet = async (
       let name, city, state;
       switch (sheetName) {
         case "Non-Nevada":
-          name = row.get("OtherNV Casino");
-          row.delete("OtherNV Casino");
+          name = row.get("Non-NV Casino");
+          row.delete("Non-NV Casino");
           city = row.get("City");
           row.delete("City");
           state = row.get("State");
