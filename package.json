@@ -10,7 +10,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.8.1",
+    "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -22,27 +22,27 @@
     "classnames": "^2.3.2",
     "color-interpolate": "^1.0.5",
     "framer-motion": "^10.16.4",
-    "google-spreadsheet": "^4.1.0",
+    "google-spreadsheet": "^4.1.1",
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
-    "next": "^13.5.5",
+    "next": "^14.0.2",
     "next-shynet": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-leaflet": "4.2.1",
     "react-leaflet-custom-control": "^1.4.0",
     "react-responsive": "^9.0.2",
-    "sass": "^1.69.4"
+    "sass": "^1.69.5"
   },
   "devDependencies": {
-    "@types/leaflet": "^1.9.6",
-    "@types/node": "^20.8.6",
-    "@types/react": "^18.2.28",
-    "eslint": "^8.51.0",
-    "eslint-config-next": "^13.5.5",
+    "@types/leaflet": "^1.9.8",
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.2.37",
+    "eslint": "^8.53.0",
+    "eslint-config-next": "^14.0.2",
     "format-imports": "^3.2.6",
     "husky": "^8.0.3",
-    "lint-staged": "^15.0.1",
+    "lint-staged": "^15.1.0",
     "typescript": "^5.2.2"
   },
   "lint-staged": {
