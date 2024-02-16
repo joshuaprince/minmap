@@ -32,16 +32,14 @@ export const getCircleMarkerColor = (value: number | null, scheme: ColorScheme) 
 
     case ColorScheme.CHIP_COLOR:
     default:
-      if (value < 5) {
-        color = "#fb84ff";
-      } else if (value < 10) {
+      if (value < 10) {
         color = "#ff0000";
       } else if (value < 15) {
         color = "#3333ff";
       } else if (value < 20) {
         color = "#aa00ff";
       } else if (value < 25) {
-        color = "#ffff00";
+        color = "#ffd500";
       } else if (value < 50) {
         color = "#00ff00";
       } else {

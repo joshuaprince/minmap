@@ -10,7 +10,7 @@ type ColorKeyProps = {
   scheme: ColorScheme
 }
 
-const keyTypes = ["?", "<$5", 5, 10, 15, 20, 25, "$50+"]
+const keyTypes = ["?", 5, 10, 15, 20, 25, "$50+"]
 
 export const ColorKey: React.FC<ColorKeyProps> = (props) => {
   return (
@@ -20,9 +20,6 @@ export const ColorKey: React.FC<ColorKeyProps> = (props) => {
         switch (ct) {
           case "?":
             key = null;
-            break;
-          case "<$5":
-            key = 1;
             break;
           case "$50+":
             key = 50;
