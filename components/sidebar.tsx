@@ -72,9 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         This map plots the typical table minimums at casinos in the United States. Data
         shown is collected directly from{" "}
         <a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/Craps/">/r/Craps</a>{"' "}
-        <a target="_blank" rel="noopener noreferrer" href={props.links.spreadsheetDirect}>Spreadsheet of Minimums</a>,
-        which is maintained by{" "}
-        <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/cochran10">@cochran10</a>.
+        <a target="_blank" rel="noopener noreferrer" href={props.links.spreadsheetDirect}>Spreadsheet of Minimums</a>.
       </p>
       <p>
         {isTap ? "Tap" : "Click on"} a location on the map to see more information about it.{" "}
@@ -83,7 +81,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       <p>
         <b>All data is user-reported and not guaranteed to be accurate.</b> If any data is incorrect
         or missing,{" "}
-        <a target="_blank" rel="noopener noreferrer" href={props.links.spreadsheetComments}><b>please report it here!</b></a>
+        <a target="_blank" rel="noopener noreferrer" href={props.links.spreadsheetComments}><b>please report it by leaving a comment on the spreadsheet.</b></a>
       </p>
 
       <div className={SidebarStyles.searchContainer}>
